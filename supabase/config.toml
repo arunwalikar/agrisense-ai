@@ -1,0 +1,17 @@
+project_id = "ddxcjehclkcxpjpklxlh"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+
+[functions.analyze-plant]
+verify_jwt = false
+
+[functions.analyze-soil]
+verify_jwt = false
+
+[functions.get-weather]
+verify_jwt = false
+
+[functions.recommend-crops]
+verify_jwt = false
