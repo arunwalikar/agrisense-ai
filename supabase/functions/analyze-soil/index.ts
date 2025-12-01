@@ -17,13 +17,55 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    let prompt: string;
+    let messages: any[];
 
-    // Check if this is a digital soil data request (location-based)
-    if (body.useDigitalData && body.latitude && body.longitude) {
+    // Check if this is an image-based soil analysis
+    if (body.useImageAnalysis && body.image) {
+      console.log("Analyzing soil image with Lovable AI vision...");
+
+      messages = [
+        {
+          role: 'system',
+          content: 'You are an expert soil scientist. Analyze soil images and provide detailed soil characteristics, composition, and agricultural recommendations.'
+        },
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: `Analyze this soil sample image and provide comprehensive soil analysis in JSON format:
+{
+  "visual_assessment": "description of soil color, texture, and visible characteristics",
+  "category": "soil type category (e.g., Sandy Loam, Clay, Loamy, etc.)",
+  "quality": "Overall quality rating (Excellent/Good/Fair/Poor)",
+  "texture": "soil texture (Sandy/Loamy/Clay/etc.)",
+  "color": "soil color and what it indicates",
+  "moisture_appearance": "appears dry/moist/wet",
+  "organic_matter": "estimated organic matter content (Low/Medium/High)",
+  "estimated_ph": "estimated pH range",
+  "nitrogen_status": "estimated status (Low/Adequate/High)",
+  "phosphorus_status": "estimated status (Low/Adequate/High)",
+  "potassium_status": "estimated status (Low/Adequate/High)",
+  "deficiencies": ["list of potential deficiencies based on visual cues"],
+  "suitable_crops": ["list of 5-8 crops suitable for this soil type"],
+  "fertilizer_recommendations": "detailed fertilizer recommendations",
+  "additional_notes": "any other observations or recommendations"
+}`
+            },
+            {
+              type: 'image_url',
+              image_url: {
+                url: body.image
+              }
+            }
+          ]
+        }
+      ];
+    } else if (body.useDigitalData && body.latitude && body.longitude) {
+      // Digital soil data based on location
       console.log("Fetching digital soil data for location:", body.latitude, body.longitude);
       
-      prompt = `Based on the geographical location (Latitude: ${body.latitude}, Longitude: ${body.longitude}), provide digital soil data analysis for this region.
+      const prompt = `Based on the geographical location (Latitude: ${body.latitude}, Longitude: ${body.longitude}), provide digital soil data analysis for this region.
 
 Use your knowledge of soil types, climate zones, and agricultural patterns to generate realistic soil data for this location.
 
@@ -44,6 +86,17 @@ Provide comprehensive soil analysis in JSON format:
   "suitable_crops": ["list of 5-8 crops suitable for this region"],
   "fertilizer_recommendations": "detailed fertilizer recommendations based on soil type"
 }`;
+
+      messages = [
+        {
+          role: 'system',
+          content: 'You are an expert soil scientist and agronomist. Provide accurate soil analysis and farming recommendations based on geographical data.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ];
     } else {
       // Manual soil data analysis
       const { ph, nitrogen, phosphorus, potassium, moisture } = body;
@@ -54,7 +107,7 @@ Provide comprehensive soil analysis in JSON format:
 
       console.log("Analyzing manual soil data with Lovable AI...");
 
-      prompt = `Analyze this soil test data and provide detailed recommendations:
+      const prompt = `Analyze this soil test data and provide detailed recommendations:
 
 Soil Parameters:
 - pH: ${ph}
@@ -74,6 +127,17 @@ Provide a comprehensive analysis in JSON format:
   "suitable_crops": ["list of 5-8 suitable crops"],
   "fertilizer_recommendations": "detailed fertilizer recommendations"
 }`;
+
+      messages = [
+        {
+          role: 'system',
+          content: 'You are an expert soil scientist and agronomist. Provide accurate soil analysis and farming recommendations based on test data.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ];
     }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -84,16 +148,7 @@ Provide a comprehensive analysis in JSON format:
       },
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert soil scientist and agronomist. Provide accurate soil analysis and farming recommendations based on test data.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
+        messages: messages,
       }),
     });
 
