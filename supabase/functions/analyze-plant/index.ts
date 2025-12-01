@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { image } = await req.json();
+    const { image, detectDisease = false } = await req.json();
     
     if (!image) {
       throw new Error("No image provided");
@@ -22,20 +22,10 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log("Analyzing plant image with Lovable AI...");
+    console.log(`Analyzing plant image (disease detection: ${detectDisease})...`);
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          {
-            role: 'system',
-            content: `You are an expert botanist and plant pathologist. Analyze plant leaf images to:
+    const systemPrompt = detectDisease 
+      ? `You are an expert botanist and plant pathologist. Analyze plant leaf images to:
 1. Identify the plant species
 2. Detect any diseases present
 3. Provide symptoms, treatment, and pesticide recommendations
@@ -49,13 +39,41 @@ Respond in JSON format with this structure:
   "cure": "treatment recommendations",
   "pesticides": "recommended pesticides"
 }`
+      : `You are an expert botanist. Identify plant species from images.
+
+Respond in JSON format with this structure:
+{
+  "species": "plant name",
+  "confidence": 0.95,
+  "disease": null,
+  "symptoms": null,
+  "cure": null,
+  "pesticides": null
+}`;
+
+    const userPrompt = detectDisease
+      ? 'Analyze this plant leaf image. Identify the species and check for any diseases.'
+      : 'Identify the plant species in this image.';
+
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt
           },
           {
             role: 'user',
             content: [
               {
                 type: 'text',
-                text: 'Analyze this plant leaf image. Identify the species and check for any diseases.'
+                text: userPrompt
               },
               {
                 type: 'image_url',
