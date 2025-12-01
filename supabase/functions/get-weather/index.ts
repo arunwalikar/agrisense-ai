@@ -52,31 +52,58 @@ Return in JSON format:
   ]
 }`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a meteorologist and agricultural advisor. Provide accurate weather data and farming recommendations.'
+    let response;
+    let lastError;
+    
+    // Retry logic for transient failures
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json',
           },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-      }),
-    });
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a meteorologist and agricultural advisor. Provide accurate weather data and farming recommendations.'
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ],
+          }),
+        });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('AI API error:', response.status, errorText);
-      throw new Error(`Weather API failed: ${response.status}`);
+        if (response.ok) {
+          break; // Success, exit retry loop
+        }
+        
+        const errorText = await response.text();
+        lastError = `${response.status}: ${errorText}`;
+        console.error(`AI API error (attempt ${attempt}/3):`, lastError);
+        
+        if (attempt < 3) {
+          // Wait before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      } catch (fetchError) {
+        lastError = fetchError instanceof Error ? fetchError.message : 'Unknown fetch error';
+        console.error(`Network error (attempt ${attempt}/3):`, lastError);
+        
+        if (attempt < 3) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
+    }
+
+    if (!response || !response.ok) {
+      console.error('All retry attempts failed. Using fallback data.');
+      throw new Error(`Weather API failed after retries: ${lastError}`);
     }
 
     const data = await response.json();
