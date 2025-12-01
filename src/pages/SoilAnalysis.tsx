@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Loader2, TrendingUp, Droplets, Sprout, MapPin } from "lucide-react";
+import { FlaskConical, Loader2, TrendingUp, Droplets, Sprout, MapPin, Camera, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -9,11 +9,83 @@ const SoilAnalysis = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [analysisMode, setAnalysisMode] = useState<"location" | "image">("location");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+        setAnalysisMode("image");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCameraCapture = () => {
+    cameraInputRef.current?.click();
+  };
+
+  const handleUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const clearImage = () => {
+    setSelectedImage(null);
+    setResult(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
+  };
+
+  const analyzeSoilImage = async () => {
+    if (!selectedImage) {
+      toast({
+        title: "No Image Selected",
+        description: "Please capture or upload a soil image first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setResult(null);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-soil', {
+        body: {
+          image: selectedImage,
+          useImageAnalysis: true,
+        },
+      });
+
+      if (error) throw error;
+
+      setResult(data);
+      toast({
+        title: "Analysis Complete",
+        description: "Soil image analyzed successfully",
+      });
+    } catch (error: any) {
+      console.error("Analysis error:", error);
+      toast({
+        title: "Analysis Failed",
+        description: error.message || "Failed to analyze soil image. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const getDigitalSoilData = async () => {
     setIsAnalyzing(true);
     setResult(null);
+    setAnalysisMode("location");
 
     try {
       // Get user's location
@@ -73,55 +145,142 @@ const SoilAnalysis = () => {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Location Section */}
+        {/* Input Section - Location or Image */}
         <Card className="border-primary/20 bg-gradient-card shadow-soft">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-primary" />
-              Location-Based Analysis
+              <FlaskConical className="h-5 w-5 text-primary" />
+              Soil Analysis Options
             </CardTitle>
             <CardDescription>
-              Automatically fetch soil data for your current location
+              Choose between location-based data or image analysis
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="rounded-lg bg-primary/10 p-4">
-              <h3 className="mb-2 font-semibold text-primary">How it works</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Click "Get Soil Data" below</li>
-                <li>• Allow location access when prompted</li>
-                <li>• Digital soil data is fetched automatically</li>
-                <li>• Get instant analysis and recommendations</li>
-              </ul>
-            </div>
+            {/* Hidden file inputs */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleImageSelect}
+              className="hidden"
+            />
 
-            {location && (
-              <div className="rounded-lg bg-accent/10 p-3">
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-medium text-foreground">Current Location:</span>
-                  <br />
-                  Lat: {location.lat.toFixed(4)}, Lon: {location.lon.toFixed(4)}
-                </p>
-              </div>
+            {!selectedImage ? (
+              <>
+                <div className="rounded-lg bg-primary/10 p-4">
+                  <h3 className="mb-2 font-semibold text-primary">Option 1: Location-Based</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Get digital soil data for your current GPS location
+                  </p>
+                  <Button
+                    onClick={getDigitalSoilData}
+                    disabled={isAnalyzing}
+                    className="w-full bg-gradient-primary"
+                  >
+                    {isAnalyzing && analysisMode === "location" ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Fetching Data...
+                      </>
+                    ) : (
+                      <>
+                        <MapPin className="mr-2 h-4 w-4" />
+                        Get Location Data
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-border" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Or</span>
+                  </div>
+                </div>
+
+                <div className="rounded-lg bg-accent/10 p-4">
+                  <h3 className="mb-2 font-semibold text-accent">Option 2: Image Analysis</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Take or upload a photo of your soil sample
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      onClick={handleCameraCapture}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      <Camera className="mr-2 h-4 w-4" />
+                      Camera
+                    </Button>
+                    <Button
+                      onClick={handleUpload}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      <Upload className="mr-2 h-4 w-4" />
+                      Upload
+                    </Button>
+                  </div>
+                </div>
+
+                {location && (
+                  <div className="rounded-lg bg-secondary p-3">
+                    <p className="text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">Last Location:</span>
+                      <br />
+                      Lat: {location.lat.toFixed(4)}, Lon: {location.lon.toFixed(4)}
+                    </p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="relative">
+                  <img
+                    src={selectedImage}
+                    alt="Soil sample"
+                    className="w-full rounded-lg border-2 border-primary/20"
+                  />
+                  <Button
+                    onClick={clearImage}
+                    size="icon"
+                    variant="destructive"
+                    className="absolute right-2 top-2"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <Button
+                  onClick={analyzeSoilImage}
+                  disabled={isAnalyzing}
+                  className="w-full bg-gradient-primary"
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Analyzing Image...
+                    </>
+                  ) : (
+                    <>
+                      <FlaskConical className="mr-2 h-4 w-4" />
+                      Analyze Soil Image
+                    </>
+                  )}
+                </Button>
+              </>
             )}
-
-            <Button
-              onClick={getDigitalSoilData}
-              disabled={isAnalyzing}
-              className="w-full bg-gradient-primary"
-            >
-              {isAnalyzing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Fetching Soil Data...
-                </>
-              ) : (
-                <>
-                  <FlaskConical className="mr-2 h-4 w-4" />
-                  Get Soil Data
-                </>
-              )}
-            </Button>
           </CardContent>
         </Card>
 
