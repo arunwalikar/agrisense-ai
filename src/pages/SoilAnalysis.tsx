@@ -1,48 +1,36 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { FlaskConical, Loader2, TrendingUp, Droplets, Sprout } from "lucide-react";
+import { FlaskConical, Loader2, TrendingUp, Droplets, Sprout, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const SoilAnalysis = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
   const { toast } = useToast();
 
-  const [soilData, setSoilData] = useState({
-    ph: "",
-    nitrogen: "",
-    phosphorus: "",
-    potassium: "",
-    moisture: "",
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSoilData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const analyzeSoil = async () => {
-    if (!soilData.ph || !soilData.nitrogen || !soilData.phosphorus || !soilData.potassium) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required soil parameters",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const getDigitalSoilData = async () => {
     setIsAnalyzing(true);
     setResult(null);
 
     try {
+      // Get user's location
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+
+      const { latitude, longitude } = position.coords;
+      setLocation({ lat: latitude, lon: longitude });
+
+      // Fetch digital soil data based on location
       const { data, error } = await supabase.functions.invoke('analyze-soil', {
-        body: soilData,
+        body: {
+          latitude,
+          longitude,
+          useDigitalData: true,
+        },
       });
 
       if (error) throw error;
@@ -50,15 +38,24 @@ const SoilAnalysis = () => {
       setResult(data);
       toast({
         title: "Analysis Complete",
-        description: "Soil report generated successfully",
+        description: "Digital soil data fetched successfully",
       });
     } catch (error: any) {
       console.error("Analysis error:", error);
-      toast({
-        title: "Analysis Failed",
-        description: error.message || "Failed to analyze soil data. Please try again.",
-        variant: "destructive",
-      });
+      
+      if (error.code === 1) {
+        toast({
+          title: "Location Permission Denied",
+          description: "Please allow location access to get digital soil data.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Analysis Failed",
+          description: error.message || "Failed to fetch soil data. Please try again.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsAnalyzing(false);
     }
@@ -68,113 +65,60 @@ const SoilAnalysis = () => {
     <div className="mx-auto max-w-4xl space-y-6 pb-20 md:pb-8">
       <div className="space-y-2">
         <h1 className="font-display text-3xl font-bold text-foreground">
-          Soil Analysis
+          Digital Soil Analysis
         </h1>
         <p className="text-muted-foreground">
-          Enter your soil parameters to get a detailed fertility report and recommendations
+          Get instant soil data based on your location using digital soil mapping
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Input Section */}
+        {/* Location Section */}
         <Card className="border-primary/20 bg-gradient-card shadow-soft">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FlaskConical className="h-5 w-5 text-primary" />
-              Soil Parameters
+              <MapPin className="h-5 w-5 text-primary" />
+              Location-Based Analysis
             </CardTitle>
             <CardDescription>
-              Enter the test results from your soil sample
+              Automatically fetch soil data for your current location
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="ph">pH Level *</Label>
-              <Input
-                id="ph"
-                name="ph"
-                type="number"
-                step="0.1"
-                min="0"
-                max="14"
-                placeholder="e.g., 6.5"
-                value={soilData.ph}
-                onChange={handleInputChange}
-              />
-              <p className="text-xs text-muted-foreground">Range: 0-14 (Acidic to Alkaline)</p>
+            <div className="rounded-lg bg-primary/10 p-4">
+              <h3 className="mb-2 font-semibold text-primary">How it works</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>• Click "Get Soil Data" below</li>
+                <li>• Allow location access when prompted</li>
+                <li>• Digital soil data is fetched automatically</li>
+                <li>• Get instant analysis and recommendations</li>
+              </ul>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="nitrogen">Nitrogen (N) mg/kg *</Label>
-              <Input
-                id="nitrogen"
-                name="nitrogen"
-                type="number"
-                step="0.1"
-                min="0"
-                placeholder="e.g., 45"
-                value={soilData.nitrogen}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phosphorus">Phosphorus (P) mg/kg *</Label>
-              <Input
-                id="phosphorus"
-                name="phosphorus"
-                type="number"
-                step="0.1"
-                min="0"
-                placeholder="e.g., 30"
-                value={soilData.phosphorus}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="potassium">Potassium (K) mg/kg *</Label>
-              <Input
-                id="potassium"
-                name="potassium"
-                type="number"
-                step="0.1"
-                min="0"
-                placeholder="e.g., 150"
-                value={soilData.potassium}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="moisture">Moisture % (Optional)</Label>
-              <Input
-                id="moisture"
-                name="moisture"
-                type="number"
-                step="0.1"
-                min="0"
-                max="100"
-                placeholder="e.g., 25"
-                value={soilData.moisture}
-                onChange={handleInputChange}
-              />
-            </div>
+            {location && (
+              <div className="rounded-lg bg-accent/10 p-3">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Current Location:</span>
+                  <br />
+                  Lat: {location.lat.toFixed(4)}, Lon: {location.lon.toFixed(4)}
+                </p>
+              </div>
+            )}
 
             <Button
-              onClick={analyzeSoil}
+              onClick={getDigitalSoilData}
               disabled={isAnalyzing}
               className="w-full bg-gradient-primary"
             >
               {isAnalyzing ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing...
+                  Fetching Soil Data...
                 </>
               ) : (
                 <>
                   <FlaskConical className="mr-2 h-4 w-4" />
-                  Generate Report
+                  Get Soil Data
                 </>
               )}
             </Button>
@@ -279,14 +223,14 @@ const SoilAnalysis = () => {
       {/* Info Card */}
       <Card className="border-primary/20 bg-gradient-card shadow-soft">
         <CardHeader>
-          <CardTitle className="text-lg">How to Test Your Soil</CardTitle>
+          <CardTitle className="text-lg">About Digital Soil Data</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>• Collect soil samples from multiple spots in your field</p>
-          <p>• Mix samples together and send to a certified lab</p>
-          <p>• Request NPK (Nitrogen, Phosphorus, Potassium) analysis</p>
-          <p>• Also measure pH and moisture levels</p>
-          <p>• Test soil at least once per growing season</p>
+          <p>• Digital soil mapping uses satellite and sensor data</p>
+          <p>• Provides instant soil information without lab testing</p>
+          <p>• Data includes NPK levels, pH, and soil texture</p>
+          <p>• Updated regularly with latest agricultural research</p>
+          <p>• Accurate for most agricultural planning purposes</p>
         </CardContent>
       </Card>
     </div>

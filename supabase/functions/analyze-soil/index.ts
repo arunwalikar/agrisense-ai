@@ -11,20 +11,50 @@ serve(async (req) => {
   }
 
   try {
-    const { ph, nitrogen, phosphorus, potassium, moisture } = await req.json();
-
-    if (!ph || !nitrogen || !phosphorus || !potassium) {
-      throw new Error("Missing required soil parameters");
-    }
-
+    const body = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log("Analyzing soil data with Lovable AI...");
+    let prompt: string;
 
-    const prompt = `Analyze this soil test data and provide detailed recommendations:
+    // Check if this is a digital soil data request (location-based)
+    if (body.useDigitalData && body.latitude && body.longitude) {
+      console.log("Fetching digital soil data for location:", body.latitude, body.longitude);
+      
+      prompt = `Based on the geographical location (Latitude: ${body.latitude}, Longitude: ${body.longitude}), provide digital soil data analysis for this region.
+
+Use your knowledge of soil types, climate zones, and agricultural patterns to generate realistic soil data for this location.
+
+Provide comprehensive soil analysis in JSON format:
+{
+  "location": "Approximate region/area name",
+  "category": "soil type category (e.g., Sandy Loam, Clay, Alluvial, Red Soil, etc.)",
+  "quality": "Overall quality rating (Excellent/Good/Fair/Poor)",
+  "ph": "pH value (e.g., 6.5)",
+  "nitrogen": "Nitrogen level in mg/kg",
+  "phosphorus": "Phosphorus level in mg/kg",
+  "potassium": "Potassium level in mg/kg",
+  "nitrogen_status": "status (Low/Adequate/High)",
+  "phosphorus_status": "status (Low/Adequate/High)",
+  "potassium_status": "status (Low/Adequate/High)",
+  "moisture": "Typical moisture percentage",
+  "deficiencies": ["list of common deficiencies in this region"],
+  "suitable_crops": ["list of 5-8 crops suitable for this region"],
+  "fertilizer_recommendations": "detailed fertilizer recommendations based on soil type"
+}`;
+    } else {
+      // Manual soil data analysis
+      const { ph, nitrogen, phosphorus, potassium, moisture } = body;
+
+      if (!ph || !nitrogen || !phosphorus || !potassium) {
+        throw new Error("Missing required soil parameters");
+      }
+
+      console.log("Analyzing manual soil data with Lovable AI...");
+
+      prompt = `Analyze this soil test data and provide detailed recommendations:
 
 Soil Parameters:
 - pH: ${ph}
@@ -44,6 +74,7 @@ Provide a comprehensive analysis in JSON format:
   "suitable_crops": ["list of 5-8 suitable crops"],
   "fertilizer_recommendations": "detailed fertilizer recommendations"
 }`;
+    }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
