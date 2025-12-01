@@ -4,11 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Camera, Upload, Loader2, AlertCircle, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const PlantDetection = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [detectDisease, setDetectDisease] = useState(false);
   const { toast } = useToast();
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +43,10 @@ const PlantDetection = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('analyze-plant', {
-        body: { image: selectedImage },
+        body: { 
+          image: selectedImage,
+          detectDisease: detectDisease 
+        },
       });
 
       if (error) throw error;
@@ -48,7 +54,7 @@ const PlantDetection = () => {
       setResult(data);
       toast({
         title: "Analysis Complete",
-        description: "Plant identified successfully",
+        description: detectDisease ? "Plant and disease analysis complete" : "Plant identified successfully",
       });
     } catch (error: any) {
       console.error("Analysis error:", error);
@@ -66,10 +72,10 @@ const PlantDetection = () => {
     <div className="mx-auto max-w-4xl space-y-6 pb-20 md:pb-8">
       <div className="space-y-2">
         <h1 className="font-display text-3xl font-bold text-foreground">
-          Plant & Disease Detection
+          Plant Identification
         </h1>
         <p className="text-muted-foreground">
-          Upload a photo of a plant leaf to identify the species and detect any diseases
+          Take a photo or upload an image to identify plant species
         </p>
       </div>
 
@@ -79,10 +85,10 @@ const PlantDetection = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Camera className="h-5 w-5 text-primary" />
-              Upload Image
+              Capture or Upload
             </CardTitle>
             <CardDescription>
-              Take a clear photo of the leaf for best results
+              Use your camera or choose an existing image
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -101,41 +107,73 @@ const PlantDetection = () => {
               )}
             </div>
 
-            <div className="space-y-2">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-                id="image-upload"
+            <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3">
+              <Label htmlFor="disease-toggle" className="text-sm font-medium">
+                Include Disease Detection
+              </Label>
+              <Switch
+                id="disease-toggle"
+                checked={detectDisease}
+                onCheckedChange={setDetectDisease}
               />
-              <label htmlFor="image-upload">
-                <Button variant="outline" className="w-full" asChild>
-                  <span>
-                    <Upload className="mr-2 h-4 w-4" />
-                    Choose Image
-                  </span>
-                </Button>
-              </label>
-
-              <Button
-                onClick={analyzeImage}
-                disabled={!selectedImage || isAnalyzing}
-                className="w-full bg-gradient-primary"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    <Camera className="mr-2 h-4 w-4" />
-                    Analyze Plant
-                  </>
-                )}
-              </Button>
             </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="camera-input"
+                />
+                <label htmlFor="camera-input">
+                  <Button variant="outline" className="w-full" asChild>
+                    <span>
+                      <Camera className="mr-2 h-4 w-4" />
+                      Camera
+                    </span>
+                  </Button>
+                </label>
+              </div>
+
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="file-input"
+                />
+                <label htmlFor="file-input">
+                  <Button variant="outline" className="w-full" asChild>
+                    <span>
+                      <Upload className="mr-2 h-4 w-4" />
+                      Upload
+                    </span>
+                  </Button>
+                </label>
+              </div>
+            </div>
+
+            <Button
+              onClick={analyzeImage}
+              disabled={!selectedImage || isAnalyzing}
+              className="w-full bg-gradient-primary"
+            >
+              {isAnalyzing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Camera className="mr-2 h-4 w-4" />
+                  {detectDisease ? "Analyze Plant & Disease" : "Identify Plant"}
+                </>
+              )}
+            </Button>
           </CardContent>
         </Card>
 
