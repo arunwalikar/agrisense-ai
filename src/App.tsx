@@ -9,7 +9,6 @@ import PlantDetection from "./pages/PlantDetection";
 import SoilAnalysis from "./pages/SoilAnalysis";
 import Weather from "./pages/Weather";
 import CropRecommendation from "./pages/CropRecommendation";
-import FieldMapping from "./pages/FieldMapping";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
