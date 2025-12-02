@@ -15,3 +15,6 @@ verify_jwt = false
 
 [functions.recommend-crops]
 verify_jwt = false
+
+[functions.check-soil-suitability]
+verify_jwt = false

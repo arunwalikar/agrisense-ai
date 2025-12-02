@@ -9,6 +9,7 @@ import PlantDetection from "./pages/PlantDetection";
 import SoilAnalysis from "./pages/SoilAnalysis";
 import Weather from "./pages/Weather";
 import CropRecommendation from "./pages/CropRecommendation";
+import FieldMapping from "./pages/FieldMapping";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/soil-analysis" element={<SoilAnalysis />} />
             <Route path="/weather" element={<Weather />} />
             <Route path="/crop-recommendation" element={<CropRecommendation />} />
+            <Route path="/field-mapping" element={<FieldMapping />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

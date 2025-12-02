@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      fields: {
+        Row: {
+          created_at: string
+          id: string
+          latitude: number
+          location_name: string | null
+          longitude: number
+          name: string
+          notes: string | null
+          soil_data: Json | null
+          soil_type: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          latitude: number
+          location_name?: string | null
+          longitude: number
+          name: string
+          notes?: string | null
+          soil_data?: Json | null
+          soil_type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          latitude?: number
+          location_name?: string | null
+          longitude?: number
+          name?: string
+          notes?: string | null
+          soil_data?: Json | null
+          soil_type?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
