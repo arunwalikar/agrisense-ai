@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sprout, Loader2, Calendar, TrendingUp, Droplets } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sprout, Loader2, Calendar, TrendingUp, Droplets, FlaskConical } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const CropRecommendation = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [suitabilityResult, setSuitabilityResult] = useState<any>(null);
+  const [isSuitabilityLoading, setIsSuitabilityLoading] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -19,6 +22,14 @@ const CropRecommendation = () => {
     temperature: "",
     rainfall: "",
     season: "",
+  });
+
+  const [suitabilityData, setSuitabilityData] = useState({
+    cropName: "",
+    soilType: "",
+    ph: "",
+    temperature: "",
+    rainfall: "",
   });
 
   const handleInputChange = (name: string, value: string) => {
@@ -65,18 +76,62 @@ const CropRecommendation = () => {
     }
   };
 
+  const checkSoilSuitability = async () => {
+    if (!suitabilityData.cropName) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter a crop name",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSuitabilityLoading(true);
+    setSuitabilityResult(null);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('check-soil-suitability', {
+        body: suitabilityData,
+      });
+
+      if (error) throw error;
+
+      setSuitabilityResult(data);
+      toast({
+        title: "Analysis Complete",
+        description: "Soil suitability analysis ready",
+      });
+    } catch (error: any) {
+      console.error("Suitability analysis error:", error);
+      toast({
+        title: "Failed to Analyze Suitability",
+        description: error.message || "Could not analyze soil suitability. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSuitabilityLoading(false);
+    }
+  };
+
   return (
     <div className="mx-auto max-w-4xl space-y-6 pb-20 md:pb-8">
       <div className="space-y-2">
         <h1 className="font-display text-3xl font-bold text-foreground">
-          Crop Recommendations
+          Crop Guide & Recommendations
         </h1>
         <p className="text-muted-foreground">
-          Get personalized crop suggestions based on your soil, climate, and season
+          Get crop suggestions and check soil suitability for specific crops
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <Tabs defaultValue="recommend" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="recommend">Crop Recommendations</TabsTrigger>
+          <TabsTrigger value="suitability">Soil Suitability Check</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="recommend" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
         {/* Input Section */}
         <Card className="border-primary/20 bg-gradient-card shadow-soft">
           <CardHeader>
@@ -297,30 +352,252 @@ const CropRecommendation = () => {
         </Card>
       </div>
 
-      {/* Info Card */}
-      <Card className="border-primary/20 bg-gradient-card shadow-soft">
-        <CardHeader>
-          <CardTitle className="text-lg">Factors Affecting Crop Selection</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-3 text-sm text-muted-foreground md:grid-cols-2">
-          <div>
-            <h4 className="mb-1 font-medium text-foreground">Soil Conditions</h4>
-            <p>pH levels, nutrient content, drainage, and soil texture</p>
+          {/* Info Card */}
+          <Card className="border-primary/20 bg-gradient-card shadow-soft">
+            <CardHeader>
+              <CardTitle className="text-lg">Factors Affecting Crop Selection</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-3 text-sm text-muted-foreground md:grid-cols-2">
+              <div>
+                <h4 className="mb-1 font-medium text-foreground">Soil Conditions</h4>
+                <p>pH levels, nutrient content, drainage, and soil texture</p>
+              </div>
+              <div>
+                <h4 className="mb-1 font-medium text-foreground">Climate</h4>
+                <p>Temperature range, rainfall patterns, and seasonal variations</p>
+              </div>
+              <div>
+                <h4 className="mb-1 font-medium text-foreground">Water Availability</h4>
+                <p>Irrigation facilities and natural water sources</p>
+              </div>
+              <div>
+                <h4 className="mb-1 font-medium text-foreground">Market Demand</h4>
+                <p>Local market prices and crop profitability</p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="suitability" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Suitability Input Section */}
+            <Card className="border-primary/20 bg-gradient-card shadow-soft">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FlaskConical className="h-5 w-5 text-primary" />
+                  Soil Suitability Analysis
+                </CardTitle>
+                <CardDescription>
+                  Check if your soil is suitable for a specific crop
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="cropNameCheck">Crop Name *</Label>
+                  <Input
+                    id="cropNameCheck"
+                    placeholder="e.g., Wheat, Rice, Corn"
+                    value={suitabilityData.cropName}
+                    onChange={(e) => setSuitabilityData({ ...suitabilityData, cropName: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="soilTypeCheck">Soil Type</Label>
+                  <Select
+                    value={suitabilityData.soilType}
+                    onValueChange={(value) => setSuitabilityData({ ...suitabilityData, soilType: value })}
+                  >
+                    <SelectTrigger id="soilTypeCheck">
+                      <SelectValue placeholder="Select soil type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sandy">Sandy</SelectItem>
+                      <SelectItem value="loamy">Loamy</SelectItem>
+                      <SelectItem value="clay">Clay</SelectItem>
+                      <SelectItem value="silty">Silty</SelectItem>
+                      <SelectItem value="peaty">Peaty</SelectItem>
+                      <SelectItem value="chalky">Chalky</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phCheck">Soil pH</Label>
+                  <Input
+                    id="phCheck"
+                    type="number"
+                    step="0.1"
+                    placeholder="e.g., 6.5"
+                    value={suitabilityData.ph}
+                    onChange={(e) => setSuitabilityData({ ...suitabilityData, ph: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="temperatureCheck">Average Temperature (°C)</Label>
+                  <Input
+                    id="temperatureCheck"
+                    type="number"
+                    step="0.1"
+                    placeholder="e.g., 25"
+                    value={suitabilityData.temperature}
+                    onChange={(e) => setSuitabilityData({ ...suitabilityData, temperature: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="rainfallCheck">Annual Rainfall (mm)</Label>
+                  <Input
+                    id="rainfallCheck"
+                    type="number"
+                    placeholder="e.g., 800"
+                    value={suitabilityData.rainfall}
+                    onChange={(e) => setSuitabilityData({ ...suitabilityData, rainfall: e.target.value })}
+                  />
+                </div>
+
+                <Button
+                  onClick={checkSoilSuitability}
+                  disabled={isSuitabilityLoading}
+                  className="w-full bg-gradient-primary"
+                >
+                  {isSuitabilityLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <FlaskConical className="mr-2 h-4 w-4" />
+                      Check Suitability
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Suitability Results Section */}
+            <Card className="border-primary/20 bg-gradient-card shadow-soft">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-accent" />
+                  Suitability Report
+                </CardTitle>
+                <CardDescription>
+                  Detailed soil suitability analysis
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {!suitabilityResult && !isSuitabilityLoading && (
+                  <div className="flex h-[500px] items-center justify-center text-muted-foreground">
+                    <p className="text-center text-sm">
+                      Enter crop name and soil conditions to check suitability
+                    </p>
+                  </div>
+                )}
+
+                {isSuitabilityLoading && (
+                  <div className="flex h-[500px] items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                )}
+
+                {suitabilityResult && (
+                  <div className="space-y-4">
+                    <div className={`rounded-lg p-4 ${suitabilityResult.is_suitable ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
+                      <div className="flex items-center justify-between">
+                        <h3 className={`font-semibold ${suitabilityResult.is_suitable ? 'text-green-600' : 'text-red-600'}`}>
+                          {suitabilityResult.is_suitable ? 'Suitable ✓' : 'Not Suitable ✗'}
+                        </h3>
+                        <span className={`rounded-full px-3 py-1 text-sm font-bold ${suitabilityResult.is_suitable ? 'bg-green-500/20 text-green-600' : 'bg-red-500/20 text-red-600'}`}>
+                          {suitabilityResult.suitability_score}% Match
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {suitabilityResult.summary}
+                      </p>
+                    </div>
+
+                    {suitabilityResult.current_conditions_analysis && (
+                      <div className="rounded-lg bg-secondary p-4">
+                        <h3 className="mb-3 font-semibold text-foreground">Current Conditions</h3>
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          {Object.entries(suitabilityResult.current_conditions_analysis).map(([key, value]: [string, any]) => (
+                            <div key={key} className="flex items-center justify-between rounded bg-background p-2">
+                              <span className="capitalize text-muted-foreground">{key.replace('_status', '')}:</span>
+                              <span className={`font-medium ${
+                                value === 'optimal' ? 'text-green-600' : 
+                                value === 'acceptable' ? 'text-yellow-600' : 
+                                'text-red-600'
+                              }`}>
+                                {value}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {suitabilityResult.soil_requirements && (
+                      <div className="rounded-lg bg-primary/10 p-4">
+                        <h3 className="mb-3 font-semibold text-primary">Ideal Requirements</h3>
+                        <div className="space-y-2 text-sm">
+                          {suitabilityResult.soil_requirements.ideal_ph && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">pH:</span>
+                              <span className="font-medium text-foreground">{suitabilityResult.soil_requirements.ideal_ph}</span>
+                            </div>
+                          )}
+                          {suitabilityResult.soil_requirements.ideal_temperature && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Temperature:</span>
+                              <span className="font-medium text-foreground">{suitabilityResult.soil_requirements.ideal_temperature}</span>
+                            </div>
+                          )}
+                          {suitabilityResult.soil_requirements.ideal_rainfall && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Rainfall:</span>
+                              <span className="font-medium text-foreground">{suitabilityResult.soil_requirements.ideal_rainfall}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {suitabilityResult.recommendations && suitabilityResult.recommendations.length > 0 && (
+                      <div className="rounded-lg bg-accent/10 p-4">
+                        <h3 className="mb-2 font-semibold text-accent">Recommendations</h3>
+                        <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
+                          {suitabilityResult.recommendations.map((rec: string, idx: number) => (
+                            <li key={idx}>{rec}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {suitabilityResult.alternative_crops && suitabilityResult.alternative_crops.length > 0 && (
+                      <div className="rounded-lg bg-blue-500/10 p-4">
+                        <h3 className="mb-2 font-semibold text-blue-600">Alternative Crops</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {suitabilityResult.alternative_crops.map((crop: string, idx: number) => (
+                            <span
+                              key={idx}
+                              className="rounded-full bg-blue-500/20 px-3 py-1 text-sm font-medium text-blue-600"
+                            >
+                              {crop}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
-          <div>
-            <h4 className="mb-1 font-medium text-foreground">Climate</h4>
-            <p>Temperature range, rainfall patterns, and seasonal variations</p>
-          </div>
-          <div>
-            <h4 className="mb-1 font-medium text-foreground">Water Availability</h4>
-            <p>Irrigation facilities and natural water sources</p>
-          </div>
-          <div>
-            <h4 className="mb-1 font-medium text-foreground">Market Demand</h4>
-            <p>Local market prices and crop profitability</p>
-          </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
