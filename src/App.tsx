@@ -26,7 +26,6 @@ const App = () => (
             <Route path="/soil-analysis" element={<SoilAnalysis />} />
             <Route path="/weather" element={<Weather />} />
             <Route path="/crop-recommendation" element={<CropRecommendation />} />
-            <Route path="/field-mapping" element={<FieldMapping />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
