@@ -5,15 +5,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sprout, Loader2, Calendar, TrendingUp, Droplets, FlaskConical } from "lucide-react";
+import { Sprout, Loader2, Calendar, TrendingUp, Droplets, FlaskConical, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const CropRecommendation = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingLocation, setIsFetchingLocation] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [suitabilityResult, setSuitabilityResult] = useState<any>(null);
   const [isSuitabilityLoading, setIsSuitabilityLoading] = useState(false);
+  const [locationInfo, setLocationInfo] = useState<string | null>(null);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -37,6 +39,87 @@ const CropRecommendation = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const fetchSoilFromLocation = async () => {
+    if (!navigator.geolocation) {
+      toast({
+        title: "Geolocation Not Supported",
+        description: "Your browser doesn't support geolocation",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsFetchingLocation(true);
+    
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        
+        try {
+          const { data, error } = await supabase.functions.invoke('analyze-soil', {
+            body: { 
+              analysisType: 'digital',
+              latitude,
+              longitude
+            },
+          });
+
+          if (error) throw error;
+
+          // Map soil data to form
+          const soilTypeMap: Record<string, string> = {
+            'sandy': 'sandy',
+            'loamy': 'loamy',
+            'clay': 'clay',
+            'silty': 'silty',
+            'peaty': 'peaty',
+            'chalky': 'chalky',
+            'sandy loam': 'sandy',
+            'clay loam': 'clay',
+            'silt loam': 'silty',
+          };
+
+          const detectedType = data.soil_type?.toLowerCase() || '';
+          const mappedType = Object.entries(soilTypeMap).find(([key]) => 
+            detectedType.includes(key)
+          )?.[1] || '';
+
+          setFormData(prev => ({
+            ...prev,
+            soilType: mappedType,
+            ph: data.pH?.toString() || prev.ph,
+            temperature: data.temperature?.toString() || prev.temperature,
+          }));
+
+          setLocationInfo(`📍 ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+
+          toast({
+            title: "Soil Data Retrieved",
+            description: "Form auto-filled with your location's soil conditions",
+          });
+        } catch (error: any) {
+          console.error("Failed to fetch soil data:", error);
+          toast({
+            title: "Failed to Fetch Soil Data",
+            description: error.message || "Could not retrieve soil data for your location",
+            variant: "destructive",
+          });
+        } finally {
+          setIsFetchingLocation(false);
+        }
+      },
+      (error) => {
+        setIsFetchingLocation(false);
+        toast({
+          title: "Location Error",
+          description: error.message || "Could not get your location",
+          variant: "destructive",
+        });
+      },
+      { enableHighAccuracy: true }
+    );
   };
 
   const getCropRecommendations = async () => {
@@ -144,6 +227,40 @@ const CropRecommendation = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Auto-fetch location button */}
+            <div className="rounded-lg border border-dashed border-primary/40 bg-primary/5 p-3">
+              <Button
+                onClick={fetchSoilFromLocation}
+                disabled={isFetchingLocation}
+                variant="outline"
+                className="w-full"
+              >
+                {isFetchingLocation ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Fetching Soil Data...
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="mr-2 h-4 w-4" />
+                    Auto-Fill from My Location
+                  </>
+                )}
+              </Button>
+              {locationInfo && (
+                <p className="mt-2 text-center text-xs text-muted-foreground">{locationInfo}</p>
+              )}
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">or enter manually</span>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="soilType">Soil Type *</Label>
               <Select
