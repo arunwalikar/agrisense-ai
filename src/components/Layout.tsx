@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Leaf, Camera, FlaskConical, CloudSun, Sprout, MapPin } from "lucide-react";
+import { Leaf, Camera, FlaskConical, CloudSun, Sprout } from "lucide-react";
 
 interface LayoutProps {
   children: ReactNode;
@@ -13,7 +13,6 @@ const navItems = [
   { to: "/soil-analysis", label: "Soil Analysis", icon: FlaskConical },
   { to: "/weather", label: "Weather", icon: CloudSun },
   { to: "/crop-recommendation", label: "Crop Guide", icon: Sprout },
-  { to: "/field-mapping", label: "Field Mapping", icon: MapPin },
 ];
 
 export const Layout = ({ children }: LayoutProps) => {
