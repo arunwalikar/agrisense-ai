@@ -1,7 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Camera, FlaskConical, CloudSun, Sprout, TrendingUp, Leaf } from "lucide-react";
+import { Camera, FlaskConical, CloudSun, Sprout, TrendingUp, Leaf, Wallet } from "lucide-react";
+import ProfitLossTracker from "@/components/ProfitLossTracker";
 
 const Dashboard = () => {
   const features = [
@@ -122,6 +123,15 @@ const Dashboard = () => {
             </p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Profit/Loss Tracker */}
+      <div>
+        <h2 className="mb-6 flex items-center gap-2 font-display text-2xl font-bold text-foreground">
+          <Wallet className="h-6 w-6 text-primary" />
+          Season Profit & Loss
+        </h2>
+        <ProfitLossTracker />
       </div>
 
       {/* Features Grid */}
