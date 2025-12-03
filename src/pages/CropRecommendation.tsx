@@ -60,7 +60,7 @@ const CropRecommendation = () => {
         try {
           const { data, error } = await supabase.functions.invoke('analyze-soil', {
             body: { 
-              analysisType: 'digital',
+              useDigitalData: true,
               latitude,
               longitude
             },
