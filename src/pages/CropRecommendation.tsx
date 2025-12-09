@@ -137,7 +137,13 @@ const CropRecommendation = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('recommend-crops', {
-        body: formData,
+        body: {
+          soilType: formData.soilType,
+          ph: parseFloat(formData.ph),
+          temperature: parseFloat(formData.temperature),
+          rainfall: formData.rainfall ? parseFloat(formData.rainfall) : null,
+          season: formData.season,
+        },
       });
 
       if (error) throw error;
@@ -174,7 +180,13 @@ const CropRecommendation = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('check-soil-suitability', {
-        body: suitabilityData,
+        body: {
+          cropName: suitabilityData.cropName,
+          soilType: suitabilityData.soilType || undefined,
+          ph: suitabilityData.ph ? parseFloat(suitabilityData.ph) : undefined,
+          temperature: suitabilityData.temperature ? parseFloat(suitabilityData.temperature) : undefined,
+          rainfall: suitabilityData.rainfall ? parseFloat(suitabilityData.rainfall) : undefined,
+        },
       });
 
       if (error) throw error;
