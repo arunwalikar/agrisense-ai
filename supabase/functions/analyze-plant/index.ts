@@ -5,17 +5,43 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input validation helper
+function validateInput(body: unknown): { image: string; detectDisease: boolean } {
+  if (!body || typeof body !== 'object') {
+    throw new Error("Invalid request body");
+  }
+
+  const { image, detectDisease = false } = body as Record<string, unknown>;
+
+  if (!image || typeof image !== 'string') {
+    throw new Error("No image provided or invalid image format");
+  }
+
+  // Validate image is a valid base64 data URL or URL
+  if (!image.startsWith('data:image/') && !image.startsWith('http://') && !image.startsWith('https://')) {
+    throw new Error("Invalid image format. Must be base64 data URL or valid URL");
+  }
+
+  // Limit image size (approximately 10MB base64)
+  if (image.length > 10 * 1024 * 1024) {
+    throw new Error("Image too large. Maximum size is 10MB");
+  }
+
+  if (typeof detectDisease !== 'boolean') {
+    throw new Error("detectDisease must be a boolean");
+  }
+
+  return { image, detectDisease };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { image, detectDisease = false } = await req.json();
-    
-    if (!image) {
-      throw new Error("No image provided");
-    }
+    const body = await req.json();
+    const { image, detectDisease } = validateInput(body);
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
