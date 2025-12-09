@@ -5,17 +5,44 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input validation
+function validateInput(body: unknown): { location: string } {
+  if (!body || typeof body !== 'object') {
+    throw new Error("Invalid request body");
+  }
+
+  const { location } = body as Record<string, unknown>;
+
+  if (!location || typeof location !== 'string') {
+    throw new Error("Location is required and must be a string");
+  }
+
+  const trimmedLocation = location.trim();
+
+  if (trimmedLocation.length < 2) {
+    throw new Error("Location must be at least 2 characters");
+  }
+
+  if (trimmedLocation.length > 200) {
+    throw new Error("Location must be less than 200 characters");
+  }
+
+  // Basic sanitization - allow only alphanumeric, spaces, commas, hyphens, and common location chars
+  if (!/^[a-zA-Z0-9\s,\-.'()]+$/.test(trimmedLocation)) {
+    throw new Error("Location contains invalid characters");
+  }
+
+  return { location: trimmedLocation };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { location } = await req.json();
-
-    if (!location) {
-      throw new Error("Location is required");
-    }
+    const body = await req.json();
+    const { location } = validateInput(body);
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {

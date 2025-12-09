@@ -5,6 +5,75 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input validation helpers
+function validateImageAnalysis(body: Record<string, unknown>): { image: string } {
+  const { image } = body;
+  
+  if (!image || typeof image !== 'string') {
+    throw new Error("Image is required for image analysis");
+  }
+
+  if (!image.startsWith('data:image/') && !image.startsWith('http://') && !image.startsWith('https://')) {
+    throw new Error("Invalid image format. Must be base64 data URL or valid URL");
+  }
+
+  if (image.length > 10 * 1024 * 1024) {
+    throw new Error("Image too large. Maximum size is 10MB");
+  }
+
+  return { image };
+}
+
+function validateDigitalData(body: Record<string, unknown>): { latitude: number; longitude: number } {
+  const { latitude, longitude } = body;
+
+  if (typeof latitude !== 'number' || typeof longitude !== 'number') {
+    throw new Error("Latitude and longitude must be numbers");
+  }
+
+  if (latitude < -90 || latitude > 90) {
+    throw new Error("Latitude must be between -90 and 90");
+  }
+
+  if (longitude < -180 || longitude > 180) {
+    throw new Error("Longitude must be between -180 and 180");
+  }
+
+  return { latitude, longitude };
+}
+
+function validateManualInput(body: Record<string, unknown>): { 
+  ph: number; 
+  nitrogen: number; 
+  phosphorus: number; 
+  potassium: number; 
+  moisture?: number 
+} {
+  const { ph, nitrogen, phosphorus, potassium, moisture } = body;
+
+  if (typeof ph !== 'number' || ph < 0 || ph > 14) {
+    throw new Error("pH must be a number between 0 and 14");
+  }
+
+  if (typeof nitrogen !== 'number' || nitrogen < 0 || nitrogen > 1000) {
+    throw new Error("Nitrogen must be a number between 0 and 1000 mg/kg");
+  }
+
+  if (typeof phosphorus !== 'number' || phosphorus < 0 || phosphorus > 1000) {
+    throw new Error("Phosphorus must be a number between 0 and 1000 mg/kg");
+  }
+
+  if (typeof potassium !== 'number' || potassium < 0 || potassium > 1000) {
+    throw new Error("Potassium must be a number between 0 and 1000 mg/kg");
+  }
+
+  if (moisture !== undefined && (typeof moisture !== 'number' || moisture < 0 || moisture > 100)) {
+    throw new Error("Moisture must be a number between 0 and 100");
+  }
+
+  return { ph, nitrogen, phosphorus, potassium, moisture };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -12,6 +81,11 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
+    
+    if (!body || typeof body !== 'object') {
+      throw new Error("Invalid request body");
+    }
+
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
@@ -21,6 +95,7 @@ serve(async (req) => {
 
     // Check if this is an image-based soil analysis
     if (body.useImageAnalysis && body.image) {
+      const { image } = validateImageAnalysis(body);
       console.log("Analyzing soil image with Lovable AI vision...");
 
       messages = [
@@ -55,17 +130,17 @@ serve(async (req) => {
             {
               type: 'image_url',
               image_url: {
-                url: body.image
+                url: image
               }
             }
           ]
         }
       ];
-    } else if (body.useDigitalData && body.latitude && body.longitude) {
-      // Digital soil data based on location
-      console.log("Fetching digital soil data for location:", body.latitude, body.longitude);
+    } else if (body.useDigitalData && body.latitude !== undefined && body.longitude !== undefined) {
+      const { latitude, longitude } = validateDigitalData(body);
+      console.log("Fetching digital soil data for location:", latitude, longitude);
       
-      const prompt = `Based on the geographical location (Latitude: ${body.latitude}, Longitude: ${body.longitude}), provide digital soil data analysis for this region.
+      const prompt = `Based on the geographical location (Latitude: ${latitude}, Longitude: ${longitude}), provide digital soil data analysis for this region.
 
 Use your knowledge of soil types, climate zones, and agricultural patterns to generate realistic soil data for this location.
 
@@ -99,11 +174,8 @@ Provide comprehensive soil analysis in JSON format:
       ];
     } else {
       // Manual soil data analysis
-      const { ph, nitrogen, phosphorus, potassium, moisture } = body;
-
-      if (!ph || !nitrogen || !phosphorus || !potassium) {
-        throw new Error("Missing required soil parameters");
-      }
+      const validatedInput = validateManualInput(body);
+      const { ph, nitrogen, phosphorus, potassium, moisture } = validatedInput;
 
       console.log("Analyzing manual soil data with Lovable AI...");
 

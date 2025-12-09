@@ -5,16 +5,16 @@ enabled = true
 site_url = "http://localhost:3000"
 
 [functions.analyze-plant]
-verify_jwt = false
+verify_jwt = true
 
 [functions.analyze-soil]
-verify_jwt = false
+verify_jwt = true
 
 [functions.get-weather]
-verify_jwt = false
+verify_jwt = true
 
 [functions.recommend-crops]
-verify_jwt = false
+verify_jwt = true
 
 [functions.check-soil-suitability]
-verify_jwt = false
+verify_jwt = true
