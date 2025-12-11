@@ -30,7 +30,7 @@ interface LayoutProps {
 }
 
 const mainNavItems = [
-  { to: "/", label: "Dashboard", icon: Leaf },
+  { to: "/dashboard", label: "Dashboard", icon: Leaf },
   { to: "/plant-detection", label: "Plant Detection", icon: Camera },
   { to: "/soil-analysis", label: "Soil Analysis", icon: FlaskConical },
   { to: "/weather", label: "Weather", icon: CloudSun },
@@ -38,7 +38,7 @@ const mainNavItems = [
 ];
 
 const mobileNavItems = [
-  { to: "/", label: "Home", icon: Leaf },
+  { to: "/dashboard", label: "Home", icon: Leaf },
   { to: "/plant-detection", label: "Plants", icon: Camera },
   { to: "/weather", label: "Weather", icon: CloudSun },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
@@ -133,7 +133,7 @@ export const Layout = ({ children }: LayoutProps) => {
               </SheetContent>
             </Sheet>
 
-            <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold text-primary transition-opacity hover:opacity-80">
+            <Link to="/dashboard" className="flex items-center gap-2 font-display text-xl font-bold text-primary transition-opacity hover:opacity-80">
               <Leaf className="h-6 w-6" />
               <span className="hidden sm:inline">AgriSmart</span>
             </Link>
