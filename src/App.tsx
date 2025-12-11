@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Layout } from "@/components/Layout";
+import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import PlantDetection from "./pages/PlantDetection";
 import SoilAnalysis from "./pages/SoilAnalysis";
@@ -30,8 +31,9 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/" element={<Layout><Dashboard /></Layout>} />
+            <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
             <Route path="/plant-detection" element={<Layout><PlantDetection /></Layout>} />
             <Route path="/soil-analysis" element={<Layout><SoilAnalysis /></Layout>} />
             <Route path="/weather" element={<Layout><Weather /></Layout>} />
