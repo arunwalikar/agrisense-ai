@@ -42,38 +42,6 @@ function validateDigitalData(body: Record<string, unknown>): { latitude: number;
   return { latitude, longitude };
 }
 
-function validateManualInput(body: Record<string, unknown>): { 
-  ph: number; 
-  nitrogen: number; 
-  phosphorus: number; 
-  potassium: number; 
-  moisture?: number 
-} {
-  const { ph, nitrogen, phosphorus, potassium, moisture } = body;
-
-  if (typeof ph !== 'number' || ph < 0 || ph > 14) {
-    throw new Error("pH must be a number between 0 and 14");
-  }
-
-  if (typeof nitrogen !== 'number' || nitrogen < 0 || nitrogen > 1000) {
-    throw new Error("Nitrogen must be a number between 0 and 1000 mg/kg");
-  }
-
-  if (typeof phosphorus !== 'number' || phosphorus < 0 || phosphorus > 1000) {
-    throw new Error("Phosphorus must be a number between 0 and 1000 mg/kg");
-  }
-
-  if (typeof potassium !== 'number' || potassium < 0 || potassium > 1000) {
-    throw new Error("Potassium must be a number between 0 and 1000 mg/kg");
-  }
-
-  if (moisture !== undefined && (typeof moisture !== 'number' || moisture < 0 || moisture > 100)) {
-    throw new Error("Moisture must be a number between 0 and 100");
-  }
-
-  return { ph, nitrogen, phosphorus, potassium, moisture };
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -93,39 +61,64 @@ serve(async (req) => {
 
     let messages: any[];
 
-    // Check if this is an image-based soil analysis
+    // Check if this is an image-based soil analysis with disease detection
     if (body.useImageAnalysis && body.image) {
       const { image } = validateImageAnalysis(body);
-      console.log("Analyzing soil image with Lovable AI vision...");
+      console.log("Analyzing soil image for diseases and characteristics...");
 
       messages = [
         {
           role: 'system',
-          content: 'You are an expert soil scientist. Analyze soil images and provide detailed soil characteristics, composition, and agricultural recommendations.'
+          content: `You are an expert soil scientist and plant pathologist. Analyze soil images to identify:
+1. Soil characteristics (type, texture, color, moisture)
+2. Diseases and pathogens present in the soil
+3. Fungal infections (like Fusarium, Pythium, Rhizoctonia, etc.)
+4. Signs of soil-borne diseases
+5. Agricultural recommendations
+
+Provide detailed, actionable insights for farmers.`
         },
         {
           role: 'user',
           content: [
             {
               type: 'text',
-              text: `Analyze this soil sample image and provide comprehensive soil analysis in JSON format:
+              text: `Analyze this soil sample image comprehensively. Detect any diseases, fungal infections, or pathogens. Provide analysis in JSON format:
 {
-  "visual_assessment": "description of soil color, texture, and visible characteristics",
-  "category": "soil type category (e.g., Sandy Loam, Clay, Loamy, etc.)",
+  "visual_assessment": "description of soil appearance",
+  "category": "soil type (Sandy Loam, Clay, Loamy, etc.)",
   "quality": "Overall quality rating (Excellent/Good/Fair/Poor)",
-  "texture": "soil texture (Sandy/Loamy/Clay/etc.)",
-  "color": "soil color and what it indicates",
-  "moisture_appearance": "appears dry/moist/wet",
-  "organic_matter": "estimated organic matter content (Low/Medium/High)",
-  "estimated_ph": "estimated pH range",
-  "nitrogen_status": "estimated status (Low/Adequate/High)",
-  "phosphorus_status": "estimated status (Low/Adequate/High)",
-  "potassium_status": "estimated status (Low/Adequate/High)",
-  "deficiencies": ["list of potential deficiencies based on visual cues"],
-  "suitable_crops": ["list of 5-8 crops suitable for this soil type"],
-  "fertilizer_recommendations": "detailed fertilizer recommendations",
-  "additional_notes": "any other observations or recommendations"
-}`
+  "texture": "soil texture",
+  "color": "soil color and implications",
+  "moisture_appearance": "dry/moist/wet",
+  "organic_matter": "Low/Medium/High",
+  "estimated_ph": "pH range estimate",
+  "nitrogen_status": "Low/Adequate/High",
+  "phosphorus_status": "Low/Adequate/High",
+  "potassium_status": "Low/Adequate/High",
+  "health_status": "Overall soil health assessment",
+  "diseases_detected": [
+    {
+      "name": "disease name",
+      "severity": "Low/Medium/High",
+      "description": "brief description of the disease"
+    }
+  ],
+  "fungal_infections": [
+    {
+      "name": "fungal pathogen name",
+      "severity": "Low/Medium/High", 
+      "description": "signs and symptoms observed"
+    }
+  ],
+  "treatment_recommendations": "specific treatments for detected issues",
+  "deficiencies": ["list of nutrient deficiencies"],
+  "suitable_crops": ["5-8 suitable crops"],
+  "fertilizer_recommendations": "detailed fertilizer advice",
+  "additional_notes": "other observations"
+}
+
+If no diseases or infections are detected, return empty arrays for diseases_detected and fungal_infections, and provide a positive health_status message.`
             },
             {
               type: 'image_url',
@@ -142,7 +135,7 @@ serve(async (req) => {
       
       const prompt = `Based on the geographical location (Latitude: ${latitude}, Longitude: ${longitude}), provide digital soil data analysis for this region.
 
-Use your knowledge of soil types, climate zones, and agricultural patterns to generate realistic soil data for this location.
+Use your knowledge of soil types, climate zones, agricultural patterns, and common soil-borne diseases in this region.
 
 Provide comprehensive soil analysis in JSON format:
 {
@@ -157,15 +150,19 @@ Provide comprehensive soil analysis in JSON format:
   "phosphorus_status": "status (Low/Adequate/High)",
   "potassium_status": "status (Low/Adequate/High)",
   "moisture": "Typical moisture percentage",
-  "deficiencies": ["list of common deficiencies in this region"],
-  "suitable_crops": ["list of 5-8 crops suitable for this region"],
-  "fertilizer_recommendations": "detailed fertilizer recommendations based on soil type"
+  "health_status": "General soil health in this region",
+  "common_diseases": ["list of common soil diseases in this region"],
+  "common_fungi": ["list of common fungal pathogens in this region"],
+  "prevention_tips": "preventive measures for common soil issues",
+  "deficiencies": ["common deficiencies in this region"],
+  "suitable_crops": ["5-8 crops suitable for this region"],
+  "fertilizer_recommendations": "fertilizer recommendations based on soil type"
 }`;
 
       messages = [
         {
           role: 'system',
-          content: 'You are an expert soil scientist and agronomist. Provide accurate soil analysis and farming recommendations based on geographical data.'
+          content: 'You are an expert soil scientist, agronomist, and plant pathologist. Provide accurate soil analysis, disease risk assessment, and farming recommendations based on geographical data.'
         },
         {
           role: 'user',
@@ -173,43 +170,7 @@ Provide comprehensive soil analysis in JSON format:
         }
       ];
     } else {
-      // Manual soil data analysis
-      const validatedInput = validateManualInput(body);
-      const { ph, nitrogen, phosphorus, potassium, moisture } = validatedInput;
-
-      console.log("Analyzing manual soil data with Lovable AI...");
-
-      const prompt = `Analyze this soil test data and provide detailed recommendations:
-
-Soil Parameters:
-- pH: ${ph}
-- Nitrogen (N): ${nitrogen} mg/kg
-- Phosphorus (P): ${phosphorus} mg/kg
-- Potassium (K): ${potassium} mg/kg
-${moisture ? `- Moisture: ${moisture}%` : ''}
-
-Provide a comprehensive analysis in JSON format:
-{
-  "category": "soil type category (e.g., Sandy Loam, Clay, etc.)",
-  "quality": "Overall quality rating (Excellent/Good/Fair/Poor)",
-  "nitrogen_status": "status (Low/Adequate/High)",
-  "phosphorus_status": "status (Low/Adequate/High)",
-  "potassium_status": "status (Low/Adequate/High)",
-  "deficiencies": ["list of detected deficiencies"],
-  "suitable_crops": ["list of 5-8 suitable crops"],
-  "fertilizer_recommendations": "detailed fertilizer recommendations"
-}`;
-
-      messages = [
-        {
-          role: 'system',
-          content: 'You are an expert soil scientist and agronomist. Provide accurate soil analysis and farming recommendations based on test data.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ];
+      throw new Error("Invalid request. Use either image analysis or location-based analysis.");
     }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -225,6 +186,18 @@ Provide a comprehensive analysis in JSON format:
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: "Rate limits exceeded, please try again later." }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ error: "Payment required, please add funds to your workspace." }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
       const errorText = await response.text();
       console.error('AI API error:', response.status, errorText);
       throw new Error(`AI analysis failed: ${response.status}`);
@@ -247,9 +220,12 @@ Provide a comprehensive analysis in JSON format:
       result = {
         category: "Analysis incomplete",
         quality: "Unknown",
+        health_status: "Unable to determine",
         nitrogen_status: "Unknown",
         phosphorus_status: "Unknown",
         potassium_status: "Unknown",
+        diseases_detected: [],
+        fungal_infections: [],
         deficiencies: [],
         suitable_crops: ["Consult agricultural expert"],
         fertilizer_recommendations: "Unable to generate recommendations. Please verify input data."
@@ -267,9 +243,12 @@ Provide a comprehensive analysis in JSON format:
         error: error instanceof Error ? error.message : 'Unknown error occurred',
         category: "Error",
         quality: "Unknown",
+        health_status: "Analysis failed",
         nitrogen_status: "Unknown",
         phosphorus_status: "Unknown",
         potassium_status: "Unknown",
+        diseases_detected: [],
+        fungal_infections: [],
         deficiencies: [],
         suitable_crops: [],
         fertilizer_recommendations: "Analysis failed. Please try again."

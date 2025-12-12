@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { CloudSun, Droplets, Wind, ThermometerSun, Loader2, MapPin, Calendar, CloudRain, Sun, Cloud, CloudSnow, AlertTriangle, Sprout } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
 
 interface WeatherCurrent {
   temperature: number;
@@ -60,13 +59,11 @@ const getWeatherIcon = (condition: string) => {
 const getIrrigationStatus = (weatherData: WeatherData): IrrigationRecommendation => {
   const { current, forecast } = weatherData;
   
-  // Check rainfall in upcoming days
   const upcomingRain = forecast.some(day => 
     day.condition.toLowerCase().includes('rain') || 
     (day.rainfall_chance && day.rainfall_chance > 50)
   );
   
-  // High humidity and recent rainfall
   if (current.rainfall > 5 || (current.humidity > 80 && upcomingRain)) {
     return {
       status: 'not_needed',
@@ -75,7 +72,6 @@ const getIrrigationStatus = (weatherData: WeatherData): IrrigationRecommendation
     };
   }
   
-  // Hot and dry conditions
   if (current.temperature > 30 && current.humidity < 50 && !upcomingRain) {
     return {
       status: 'required',
@@ -84,7 +80,6 @@ const getIrrigationStatus = (weatherData: WeatherData): IrrigationRecommendation
     };
   }
   
-  // Moderate conditions
   if (current.humidity < 60 && !upcomingRain) {
     return {
       status: 'optional',
@@ -105,31 +100,6 @@ const Weather = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const { toast } = useToast();
-  const { user } = useAuth();
-
-  // Auto-load weather based on user's farm location
-  useEffect(() => {
-    const loadFarmWeather = async () => {
-      if (!user) return;
-      
-      const { data: farms } = await supabase
-        .from('farms')
-        .select('location_name, latitude, longitude')
-        .eq('user_id', user.id)
-        .limit(1);
-      
-      if (farms && farms.length > 0) {
-        const farm = farms[0];
-        if (farm.location_name) {
-          fetchWeather(farm.location_name);
-        } else if (farm.latitude && farm.longitude) {
-          fetchWeather(`${farm.latitude},${farm.longitude}`);
-        }
-      }
-    };
-    
-    loadFarmWeather();
-  }, [user]);
 
   const fetchWeather = async (loc?: string) => {
     const searchLocation = loc || location;
@@ -151,7 +121,6 @@ const Weather = () => {
 
       if (error) throw error;
 
-      // Add irrigation recommendation
       const enrichedData = {
         ...data,
         irrigation_recommendation: getIrrigationStatus(data)
@@ -269,7 +238,6 @@ const Weather = () => {
         </Card>
       )}
 
-      {/* Weather Display */}
       {weatherData && !isLoading && (
         <>
           {/* Current Weather */}
@@ -399,7 +367,7 @@ const Weather = () => {
                 <div>
                   <p className="font-medium text-yellow-700 dark:text-yellow-400">High UV Alert</p>
                   <p className="text-sm text-yellow-600 dark:text-yellow-500">
-                    UV index is very high. Avoid outdoor farm work between 10 AM - 4 PM. Wear protective clothing and sunscreen.
+                    UV index is very high. Avoid outdoor farm work between 10 AM - 4 PM.
                   </p>
                 </div>
               </CardContent>
@@ -467,9 +435,8 @@ const Weather = () => {
                         {day.condition}
                       </p>
                       {day.rainfall_chance !== undefined && day.rainfall_chance > 0 && (
-                        <p className="mt-1 flex items-center justify-center gap-1 text-xs text-blue-500">
-                          <Droplets className="h-3 w-3" />
-                          {day.rainfall_chance}%
+                        <p className="mt-1 text-xs text-blue-500">
+                          {day.rainfall_chance}% rain
                         </p>
                       )}
                     </div>
@@ -479,17 +446,6 @@ const Weather = () => {
             </Card>
           )}
         </>
-      )}
-
-      {!weatherData && !isLoading && (
-        <Card className="border-primary/20 bg-gradient-card shadow-soft">
-          <CardContent className="flex h-64 flex-col items-center justify-center gap-4 text-muted-foreground">
-            <CloudSun className="h-16 w-16 opacity-50" />
-            <p className="text-center">
-              Enter a location to view weather data and farming recommendations
-            </p>
-          </CardContent>
-        </Card>
       )}
     </div>
   );
