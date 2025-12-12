@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Loader2, TrendingUp, Droplets, Sprout, MapPin, Camera, Upload, X } from "lucide-react";
+import { FlaskConical, Loader2, TrendingUp, Droplets, Sprout, MapPin, Camera, Upload, X, AlertTriangle, Bug } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
 
 const SoilAnalysis = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -88,7 +89,6 @@ const SoilAnalysis = () => {
     setAnalysisMode("location");
 
     try {
-      // Get user's location
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
@@ -96,7 +96,6 @@ const SoilAnalysis = () => {
       const { latitude, longitude } = position.coords;
       setLocation({ lat: latitude, lon: longitude });
 
-      // Fetch digital soil data based on location
       const { data, error } = await supabase.functions.invoke('analyze-soil', {
         body: {
           latitude,
@@ -133,6 +132,22 @@ const SoilAnalysis = () => {
     }
   };
 
+  const getSeverityColor = (severity: string) => {
+    switch (severity?.toLowerCase()) {
+      case "high":
+      case "severe":
+        return "bg-destructive text-destructive-foreground";
+      case "medium":
+      case "moderate":
+        return "bg-orange-500 text-white";
+      case "low":
+      case "mild":
+        return "bg-yellow-500 text-black";
+      default:
+        return "bg-muted text-muted-foreground";
+    }
+  };
+
   return (
     <div className="mx-auto max-w-4xl space-y-6 pb-20 md:pb-8">
       <div className="space-y-2">
@@ -140,7 +155,7 @@ const SoilAnalysis = () => {
           Digital Soil Analysis
         </h1>
         <p className="text-muted-foreground">
-          Get instant soil data based on your location using digital soil mapping
+          Get soil data, detect diseases and fungal infections in your soil
         </p>
       </div>
 
@@ -212,7 +227,7 @@ const SoilAnalysis = () => {
                 <div className="rounded-lg bg-accent/10 p-4">
                   <h3 className="mb-2 font-semibold text-accent">Option 2: Image Analysis</h3>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Take or upload a photo of your soil sample
+                    Take or upload a photo to detect diseases & infections
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     <Button
@@ -292,14 +307,14 @@ const SoilAnalysis = () => {
               Soil Report
             </CardTitle>
             <CardDescription>
-              Detailed analysis and recommendations
+              Detailed analysis, disease detection & recommendations
             </CardDescription>
           </CardHeader>
           <CardContent>
             {!result && !isAnalyzing && (
               <div className="flex h-96 items-center justify-center text-muted-foreground">
                 <p className="text-center text-sm">
-                  Enter soil parameters and click "Generate Report" to see results
+                  Use location or upload an image to analyze soil
                 </p>
               </div>
             )}
@@ -311,12 +326,86 @@ const SoilAnalysis = () => {
             )}
 
             {result && (
-              <div className="space-y-4">
+              <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                 <div className="rounded-lg bg-primary/10 p-4">
                   <h3 className="mb-2 font-semibold text-primary">Soil Category</h3>
                   <p className="text-lg font-bold text-foreground">{result.category || "Unknown"}</p>
                   <p className="text-sm text-muted-foreground">Overall Quality: {result.quality || "N/A"}</p>
                 </div>
+
+                {/* Disease/Infection Detection Section */}
+                {(result.diseases_detected || result.fungal_infections) && (
+                  <div className="rounded-lg bg-destructive/10 p-4 border border-destructive/20">
+                    <h3 className="mb-3 flex items-center gap-2 font-semibold text-destructive">
+                      <Bug className="h-4 w-4" />
+                      Disease & Infection Detection
+                    </h3>
+                    
+                    {result.diseases_detected && result.diseases_detected.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-sm font-medium text-foreground mb-2">Diseases Detected:</p>
+                        <div className="space-y-2">
+                          {result.diseases_detected.map((disease: any, idx: number) => (
+                            <div key={idx} className="rounded bg-background/50 p-2">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-medium text-sm">{disease.name || disease}</span>
+                                {disease.severity && (
+                                  <Badge className={getSeverityColor(disease.severity)}>
+                                    {disease.severity}
+                                  </Badge>
+                                )}
+                              </div>
+                              {disease.description && (
+                                <p className="text-xs text-muted-foreground">{disease.description}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {result.fungal_infections && result.fungal_infections.length > 0 && (
+                      <div>
+                        <p className="text-sm font-medium text-foreground mb-2">Fungal Infections:</p>
+                        <div className="space-y-2">
+                          {result.fungal_infections.map((infection: any, idx: number) => (
+                            <div key={idx} className="rounded bg-background/50 p-2">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-medium text-sm">{infection.name || infection}</span>
+                                {infection.severity && (
+                                  <Badge className={getSeverityColor(infection.severity)}>
+                                    {infection.severity}
+                                  </Badge>
+                                )}
+                              </div>
+                              {infection.description && (
+                                <p className="text-xs text-muted-foreground">{infection.description}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {result.treatment_recommendations && (
+                      <div className="mt-3 pt-3 border-t border-destructive/20">
+                        <p className="text-sm font-medium text-foreground mb-1">Treatment Recommendations:</p>
+                        <p className="text-sm text-muted-foreground">{result.treatment_recommendations}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Health Status - when no issues */}
+                {result.health_status && !result.diseases_detected?.length && !result.fungal_infections?.length && (
+                  <div className="rounded-lg bg-green-500/10 p-4 border border-green-500/20">
+                    <h3 className="mb-2 flex items-center gap-2 font-semibold text-green-600">
+                      <Sprout className="h-4 w-4" />
+                      Soil Health Status
+                    </h3>
+                    <p className="text-sm text-foreground">{result.health_status}</p>
+                  </div>
+                )}
 
                 <div className="rounded-lg bg-accent/10 p-4">
                   <h3 className="mb-3 flex items-center gap-2 font-semibold text-accent">
@@ -340,8 +429,11 @@ const SoilAnalysis = () => {
                 </div>
 
                 {result.deficiencies && result.deficiencies.length > 0 && (
-                  <div className="rounded-lg bg-destructive/10 p-4">
-                    <h3 className="mb-2 font-semibold text-destructive">Deficiencies Detected</h3>
+                  <div className="rounded-lg bg-orange-500/10 p-4">
+                    <h3 className="mb-2 flex items-center gap-2 font-semibold text-orange-600">
+                      <AlertTriangle className="h-4 w-4" />
+                      Deficiencies Detected
+                    </h3>
                     <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
                       {result.deficiencies.map((def: string, idx: number) => (
                         <li key={idx}>{def}</li>
@@ -382,14 +474,14 @@ const SoilAnalysis = () => {
       {/* Info Card */}
       <Card className="border-primary/20 bg-gradient-card shadow-soft">
         <CardHeader>
-          <CardTitle className="text-lg">About Digital Soil Data</CardTitle>
+          <CardTitle className="text-lg">About Soil Analysis</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
           <p>• Digital soil mapping uses satellite and sensor data</p>
-          <p>• Provides instant soil information without lab testing</p>
+          <p>• Image analysis detects diseases, fungal infections & soil issues</p>
+          <p>• AI-powered detection of common soil pathogens</p>
+          <p>• Get treatment recommendations for detected problems</p>
           <p>• Data includes NPK levels, pH, and soil texture</p>
-          <p>• Updated regularly with latest agricultural research</p>
-          <p>• Accurate for most agricultural planning purposes</p>
         </CardContent>
       </Card>
     </div>

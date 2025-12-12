@@ -1,22 +1,10 @@
-import { ReactNode, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ReactNode } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import {
-  Leaf, Camera, FlaskConical, CloudSun, Sprout, User, LogOut,
-  MapPin, BarChart3, Store, Bell, Shield, Menu, Wheat
+  Leaf, Camera, FlaskConical, CloudSun, Sprout, Store, Menu
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -40,45 +28,13 @@ const mainNavItems = [
 const mobileNavItems = [
   { to: "/dashboard", label: "Home", icon: Leaf },
   { to: "/plant-detection", label: "Plants", icon: Camera },
+  { to: "/soil-analysis", label: "Soil", icon: FlaskConical },
   { to: "/weather", label: "Weather", icon: CloudSun },
-  { to: "/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/notifications", label: "Alerts", icon: Bell },
+  { to: "/market-prices", label: "Market", icon: Store },
 ];
 
 export const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user, isAdmin, signOut, loading } = useAuth();
-
-  // Redirect to auth if not logged in
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth");
-    }
-  }, [user, loading, navigate]);
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/auth");
-  };
-
-  const userInitials = user?.user_metadata?.full_name
-    ? user.user_metadata.full_name.split(" ").map((n: string) => n[0]).join("").toUpperCase()
-    : user?.email?.charAt(0).toUpperCase() || "U";
-
-  // Show loading state while checking auth
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  // Don't render content if not authenticated
-  if (!user) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -117,15 +73,6 @@ export const Layout = ({ children }: LayoutProps) => {
                     </Link>
                   ))}
                   <div className="my-2 h-px bg-border" />
-                  <Link to="/farms" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-muted">
-                    <MapPin className="h-4 w-4" /> My Farms
-                  </Link>
-                  <Link to="/crops" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-muted">
-                    <Wheat className="h-4 w-4" /> Crop History
-                  </Link>
-                  <Link to="/analytics" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-muted">
-                    <BarChart3 className="h-4 w-4" /> Analytics
-                  </Link>
                   <Link to="/market-prices" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-muted">
                     <Store className="h-4 w-4" /> Market Prices
                   </Link>
@@ -160,88 +107,11 @@ export const Layout = ({ children }: LayoutProps) => {
 
           {/* Right Section */}
           <div className="flex items-center gap-2">
-            {user ? (
-              <>
-                <Link to="/notifications">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Bell className="h-5 w-5" />
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-destructive text-[10px] font-bold text-white flex items-center justify-center">
-                      2
-                    </span>
-                  </Button>
-                </Link>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                      <Avatar className="h-9 w-9">
-                        <AvatarFallback className="bg-primary text-primary-foreground">
-                          {userInitials}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <div className="flex items-center gap-2 p-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                          {userInitials}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col">
-                        <p className="text-sm font-medium">{user.user_metadata?.full_name || "Farmer"}</p>
-                        <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                      </div>
-                    </div>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link to="/profile" className="cursor-pointer">
-                        <User className="mr-2 h-4 w-4" /> Profile
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/farms" className="cursor-pointer">
-                        <MapPin className="mr-2 h-4 w-4" /> My Farms
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/crops" className="cursor-pointer">
-                        <Wheat className="mr-2 h-4 w-4" /> Crop History
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/analytics" className="cursor-pointer">
-                        <BarChart3 className="mr-2 h-4 w-4" /> Analytics
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/market-prices" className="cursor-pointer">
-                        <Store className="mr-2 h-4 w-4" /> Market Prices
-                      </Link>
-                    </DropdownMenuItem>
-                    {isAdmin && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link to="/admin" className="cursor-pointer">
-                            <Shield className="mr-2 h-4 w-4" /> Admin Panel
-                            <Badge variant="secondary" className="ml-auto text-[10px]">Admin</Badge>
-                          </Link>
-                        </DropdownMenuItem>
-                      </>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
-                      <LogOut className="mr-2 h-4 w-4" /> Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
-              <Button asChild>
-                <Link to="/auth">Login</Link>
+            <Link to="/market-prices">
+              <Button variant="ghost" size="icon">
+                <Store className="h-5 w-5" />
               </Button>
-            )}
+            </Link>
           </div>
         </div>
       </header>
