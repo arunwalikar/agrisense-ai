@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
+import { LanguageProvider } from "@/i18n/LanguageContext";
+import { translations } from "@/i18n";
 import Dashboard from "./pages/Dashboard";
 import PlantDetection from "./pages/PlantDetection";
 import SoilAnalysis from "./pages/SoilAnalysis";
@@ -15,6 +17,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
+  <LanguageProvider translations={translations}>
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -33,6 +36,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
+  </LanguageProvider>
 );
 
 export default App;
