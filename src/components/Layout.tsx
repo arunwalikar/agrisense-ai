@@ -12,7 +12,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/i18n/LanguageContext";
 interface LayoutProps {
   children: ReactNode;
 }
@@ -35,6 +36,23 @@ const mobileNavItems = [
 
 export const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
+  const { t } = useLanguage();
+
+  const translatedMainNavItems = [
+    { to: "/dashboard", label: t("nav.dashboard"), icon: Leaf },
+    { to: "/plant-detection", label: t("nav.plantDetection"), icon: Camera },
+    { to: "/soil-analysis", label: t("nav.soilAnalysis"), icon: FlaskConical },
+    { to: "/weather", label: t("nav.weather"), icon: CloudSun },
+    { to: "/crop-recommendation", label: t("nav.cropGuide"), icon: Sprout },
+  ];
+
+  const translatedMobileNavItems = [
+    { to: "/dashboard", label: t("nav.home"), icon: Leaf },
+    { to: "/plant-detection", label: t("nav.plants"), icon: Camera },
+    { to: "/soil-analysis", label: t("nav.soil"), icon: FlaskConical },
+    { to: "/weather", label: t("nav.weather"), icon: CloudSun },
+    { to: "/market-prices", label: t("nav.market"), icon: Store },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -57,7 +75,7 @@ export const Layout = ({ children }: LayoutProps) => {
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-6 flex flex-col gap-2">
-                  {mainNavItems.map(({ to, label, icon: Icon }) => (
+                  {translatedMainNavItems.map(({ to, label, icon: Icon }) => (
                     <Link
                       key={to}
                       to={to}
@@ -74,7 +92,7 @@ export const Layout = ({ children }: LayoutProps) => {
                   ))}
                   <div className="my-2 h-px bg-border" />
                   <Link to="/market-prices" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-muted">
-                    <Store className="h-4 w-4" /> Market Prices
+                    <Store className="h-4 w-4" /> {t("nav.marketPrices")}
                   </Link>
                 </nav>
               </SheetContent>
@@ -88,7 +106,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {mainNavItems.map(({ to, label, icon: Icon }) => (
+            {translatedMainNavItems.map(({ to, label, icon: Icon }) => (
               <Link
                 key={to}
                 to={to}
@@ -107,6 +125,9 @@ export const Layout = ({ children }: LayoutProps) => {
 
           {/* Right Section */}
           <div className="flex items-center gap-2">
+            <div className="hidden sm:block">
+              <LanguageSwitcher />
+            </div>
             <Link to="/market-prices">
               <Button variant="ghost" size="icon">
                 <Store className="h-5 w-5" />
@@ -124,7 +145,7 @@ export const Layout = ({ children }: LayoutProps) => {
       {/* Mobile Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card md:hidden">
         <div className="flex items-center justify-around px-2 py-2">
-          {mobileNavItems.map(({ to, label, icon: Icon }) => (
+          {translatedMobileNavItems.map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
               to={to}
