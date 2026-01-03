@@ -1,0 +1,260 @@
+{
+  "common": {
+    "appName": "AgriSmart",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "filter": "Filter",
+    "refresh": "Refresh",
+    "download": "Download",
+    "upload": "Upload",
+    "selectLanguage": "Select Language",
+    "noData": "No data available",
+    "tryAgain": "Try Again"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "plantDetection": "Plant Detection",
+    "soilAnalysis": "Soil Analysis",
+    "weather": "Weather",
+    "cropRecommendation": "Crop Recommendation",
+    "marketPrices": "Market Prices"
+  },
+  "dashboard": {
+    "title": "Welcome to AgriSmart",
+    "subtitle": "Your Smart Farming Assistant",
+    "description": "AgriSmart helps farmers make better decisions using AI-powered insights for plant health, soil analysis, weather forecasting, and crop recommendations.",
+    "features": {
+      "plantDetection": {
+        "title": "Plant Detection",
+        "description": "Identify plants and detect diseases using AI image analysis"
+      },
+      "soilAnalysis": {
+        "title": "Soil Analysis",
+        "description": "Analyze soil health and get recommendations for improvement"
+      },
+      "weather": {
+        "title": "Weather Forecast",
+        "description": "Get accurate weather predictions for your farm location"
+      },
+      "cropRecommendation": {
+        "title": "Crop Recommendation",
+        "description": "Get AI-powered crop suggestions based on your soil and climate"
+      },
+      "marketPrices": {
+        "title": "Market Prices",
+        "description": "Track current market prices for various crops"
+      }
+    },
+    "quickStats": {
+      "title": "Quick Stats",
+      "analysesCompleted": "Analyses Completed",
+      "cropsRecommended": "Crops Recommended",
+      "weatherUpdates": "Weather Updates"
+    }
+  },
+  "plantDetection": {
+    "title": "Plant & Disease Detection",
+    "subtitle": "Upload an image of a plant leaf to identify the species and detect any diseases",
+    "uploadImage": "Upload Image",
+    "dragDrop": "Drag and drop an image here, or click to select",
+    "supportedFormats": "Supported formats: JPG, PNG, WebP",
+    "detectDisease": "Detect Disease",
+    "analyzing": "Analyzing...",
+    "analyzeButton": "Analyze Plant",
+    "results": {
+      "title": "Analysis Results",
+      "species": "Species",
+      "confidence": "Confidence",
+      "disease": "Disease",
+      "healthy": "Healthy",
+      "symptoms": "Symptoms",
+      "treatment": "Treatment",
+      "pesticides": "Recommended Pesticides"
+    },
+    "errors": {
+      "noImage": "Please upload an image first",
+      "analysisFailed": "Analysis failed. Please try again."
+    }
+  },
+  "soilAnalysis": {
+    "title": "Soil Analysis",
+    "subtitle": "Analyze your soil to get detailed insights and recommendations",
+    "tabs": {
+      "image": "Image Analysis",
+      "location": "Location-Based",
+      "manual": "Manual Input"
+    },
+    "imageAnalysis": {
+      "title": "Soil Image Analysis",
+      "description": "Upload a soil image for AI-powered analysis including disease detection",
+      "uploadPrompt": "Upload a clear image of your soil sample"
+    },
+    "locationAnalysis": {
+      "title": "Location-Based Analysis",
+      "description": "Get soil data based on your geographic coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "getLocation": "Use My Location",
+      "analyze": "Analyze Location"
+    },
+    "results": {
+      "title": "Soil Analysis Results",
+      "soilType": "Soil Type",
+      "ph": "pH Level",
+      "nitrogen": "Nitrogen (N)",
+      "phosphorus": "Phosphorus (P)",
+      "potassium": "Potassium (K)",
+      "moisture": "Moisture",
+      "organicMatter": "Organic Matter",
+      "texture": "Texture",
+      "drainage": "Drainage",
+      "recommendations": "Recommendations",
+      "diseaseDetection": "Disease Detection",
+      "diseases": "Detected Diseases",
+      "treatments": "Treatment Recommendations",
+      "noDisease": "No soil diseases detected"
+    },
+    "analyzing": "Analyzing soil...",
+    "errors": {
+      "noImage": "Please upload a soil image first",
+      "noLocation": "Please provide coordinates",
+      "analysisFailed": "Soil analysis failed. Please try again."
+    }
+  },
+  "weather": {
+    "title": "Weather Forecast",
+    "subtitle": "Get accurate weather predictions and farming advice for your location",
+    "enterLocation": "Enter location",
+    "locationPlaceholder": "Enter city or region name",
+    "getWeather": "Get Weather",
+    "loading": "Fetching weather data...",
+    "current": {
+      "title": "Current Weather",
+      "temperature": "Temperature",
+      "humidity": "Humidity",
+      "windSpeed": "Wind Speed",
+      "condition": "Condition",
+      "feelsLike": "Feels Like",
+      "uvIndex": "UV Index",
+      "visibility": "Visibility"
+    },
+    "forecast": {
+      "title": "5-Day Forecast",
+      "high": "High",
+      "low": "Low"
+    },
+    "farmingAdvice": {
+      "title": "Farming Advice",
+      "irrigation": "Irrigation",
+      "planting": "Planting",
+      "harvesting": "Harvesting",
+      "pestControl": "Pest Control"
+    },
+    "errors": {
+      "noLocation": "Please enter a location",
+      "fetchFailed": "Failed to fetch weather data. Please try again."
+    }
+  },
+  "cropRecommendation": {
+    "title": "Crop Recommendation",
+    "subtitle": "Get AI-powered crop suggestions based on your soil and climate conditions",
+    "form": {
+      "soilType": "Soil Type",
+      "selectSoilType": "Select soil type",
+      "soilTypes": {
+        "clay": "Clay",
+        "sandy": "Sandy",
+        "loamy": "Loamy",
+        "silty": "Silty",
+        "peaty": "Peaty",
+        "chalky": "Chalky",
+        "alluvial": "Alluvial",
+        "red": "Red Soil",
+        "black": "Black Soil",
+        "laterite": "Laterite"
+      },
+      "phLevel": "pH Level",
+      "temperature": "Average Temperature (°C)",
+      "rainfall": "Annual Rainfall (mm)",
+      "season": "Growing Season",
+      "selectSeason": "Select season",
+      "seasons": {
+        "kharif": "Kharif (Monsoon)",
+        "rabi": "Rabi (Winter)",
+        "zaid": "Zaid (Summer)",
+        "perennial": "Perennial"
+      },
+      "submit": "Get Recommendations"
+    },
+    "results": {
+      "title": "Recommended Crops",
+      "crop": "Crop",
+      "suitability": "Suitability",
+      "yield": "Expected Yield",
+      "duration": "Growing Duration",
+      "tips": "Growing Tips",
+      "marketValue": "Market Value",
+      "waterRequirement": "Water Requirement"
+    },
+    "loading": "Analyzing conditions...",
+    "errors": {
+      "fetchFailed": "Failed to get recommendations. Please try again."
+    }
+  },
+  "marketPrices": {
+    "title": "Market Prices",
+    "subtitle": "Track current market prices for various crops across different markets",
+    "searchCrop": "Search crop...",
+    "allMarkets": "All Markets",
+    "selectMarket": "Select market",
+    "table": {
+      "crop": "Crop",
+      "market": "Market",
+      "price": "Price (₹/kg)",
+      "change": "Change",
+      "date": "Last Updated"
+    },
+    "priceUp": "Price Up",
+    "priceDown": "Price Down",
+    "noChange": "No Change",
+    "errors": {
+      "fetchFailed": "Failed to fetch market prices. Please try again."
+    }
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "The page you're looking for doesn't exist or has been moved.",
+    "backHome": "Back to Home"
+  },
+  "accessibility": {
+    "languageSwitcher": "Change language",
+    "mainNavigation": "Main navigation",
+    "skipToContent": "Skip to main content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "seo": {
+    "homeTitle": "AgriSmart - Smart Farming Assistant",
+    "homeDescription": "AI-powered farming assistant for plant detection, soil analysis, weather forecasting, and crop recommendations",
+    "plantDetectionTitle": "Plant & Disease Detection - AgriSmart",
+    "plantDetectionDescription": "Identify plants and detect diseases using advanced AI image analysis",
+    "soilAnalysisTitle": "Soil Analysis - AgriSmart",
+    "soilAnalysisDescription": "Analyze soil health with AI-powered insights and get improvement recommendations",
+    "weatherTitle": "Weather Forecast - AgriSmart",
+    "weatherDescription": "Get accurate weather predictions and farming advice for your location",
+    "cropRecommendationTitle": "Crop Recommendation - AgriSmart",
+    "cropRecommendationDescription": "Get AI-powered crop suggestions based on your soil and climate",
+    "marketPricesTitle": "Market Prices - AgriSmart",
+    "marketPricesDescription": "Track current market prices for various crops across different markets"
+  }
+}

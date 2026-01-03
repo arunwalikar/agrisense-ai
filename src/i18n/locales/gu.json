@@ -1,0 +1,104 @@
+{
+  "common": {
+    "appName": "એગ્રીસ્માર્ટ",
+    "loading": "લોડ થઈ રહ્યું છે...",
+    "error": "ભૂલ",
+    "success": "સફળ",
+    "submit": "સબમિટ કરો",
+    "cancel": "રદ કરો",
+    "save": "સાચવો",
+    "delete": "કાઢી નાખો",
+    "edit": "સંપાદિત કરો",
+    "close": "બંધ કરો",
+    "back": "પાછળ",
+    "next": "આગળ",
+    "search": "શોધો",
+    "filter": "ફિલ્ટર",
+    "refresh": "રિફ્રેશ",
+    "download": "ડાઉનલોડ",
+    "upload": "અપલોડ",
+    "selectLanguage": "ભાષા પસંદ કરો",
+    "noData": "ડેટા ઉપલબ્ધ નથી",
+    "tryAgain": "ફરી પ્રયાસ કરો"
+  },
+  "nav": {
+    "dashboard": "ડેશબોર્ડ",
+    "plantDetection": "છોડ ઓળખ",
+    "soilAnalysis": "જમીન વિશ્લેષણ",
+    "weather": "હવામાન",
+    "cropRecommendation": "પાક ભલામણ",
+    "marketPrices": "બજાર ભાવ"
+  },
+  "dashboard": {
+    "title": "એગ્રીસ્માર્ટમાં આપનું સ્વાગત છે",
+    "subtitle": "તમારો સ્માર્ટ ખેતી સહાયક",
+    "description": "એગ્રીસ્માર્ટ ખેડૂતોને છોડના સ્વાસ્થ્ય, જમીન વિશ્લેષણ, હવામાન આગાહી અને પાક ભલામણો માટે AI-આધારિત આંતરદૃષ્ટિનો ઉપયોગ કરીને વધુ સારા નિર્ણયો લેવામાં મદદ કરે છે.",
+    "features": {
+      "plantDetection": { "title": "છોડ ઓળખ", "description": "AI ઇમેજ વિશ્લેષણનો ઉપયોગ કરીને છોડ ઓળખો અને રોગો શોધો" },
+      "soilAnalysis": { "title": "જમીન વિશ્લેષણ", "description": "જમીનના સ્વાસ્થ્યનું વિશ્લેષણ કરો અને સુધારણા માટે ભલામણો મેળવો" },
+      "weather": { "title": "હવામાન આગાહી", "description": "તમારા ખેતરના સ્થાન માટે સચોટ હવામાન આગાહી મેળવો" },
+      "cropRecommendation": { "title": "પાક ભલામણ", "description": "તમારી જમીન અને આબોહવાના આધારે AI-આધારિત પાક સૂચનો મેળવો" },
+      "marketPrices": { "title": "બજાર ભાવ", "description": "વિવિધ પાકોના વર્તમાન બજાર ભાવો ટ્રેક કરો" }
+    },
+    "quickStats": { "title": "ઝડપી આંકડા", "analysesCompleted": "પૂર્ણ થયેલ વિશ્લેષણ", "cropsRecommended": "ભલામણ કરેલ પાકો", "weatherUpdates": "હવામાન અપડેટ્સ" }
+  },
+  "plantDetection": {
+    "title": "છોડ અને રોગ શોધ",
+    "subtitle": "પ્રજાતિ ઓળખવા અને કોઈપણ રોગો શોધવા માટે છોડના પાનની છબી અપલોડ કરો",
+    "uploadImage": "છબી અપલોડ કરો",
+    "dragDrop": "અહીં છબી ખેંચો અને છોડો, અથવા પસંદ કરવા ક્લિક કરો",
+    "supportedFormats": "સમર્થિત ફોર્મેટ્સ: JPG, PNG, WebP",
+    "detectDisease": "રોગ શોધો",
+    "analyzing": "વિશ્લેષણ થઈ રહ્યું છે...",
+    "analyzeButton": "છોડનું વિશ્લેષણ કરો",
+    "results": { "title": "વિશ્લેષણ પરિણામો", "species": "પ્રજાતિ", "confidence": "વિશ્વાસ", "disease": "રોગ", "healthy": "સ્વસ્થ", "symptoms": "લક્ષણો", "treatment": "સારવાર", "pesticides": "ભલામણ કરેલ જંતુનાશકો" },
+    "errors": { "noImage": "કૃપા કરીને પહેલા છબી અપલોડ કરો", "analysisFailed": "વિશ્લેષણ નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો." }
+  },
+  "soilAnalysis": {
+    "title": "જમીન વિશ્લેષણ",
+    "subtitle": "વિગતવાર આંતરદૃષ્ટિ અને ભલામણો મેળવવા માટે તમારી જમીનનું વિશ્લેષણ કરો",
+    "tabs": { "image": "છબી વિશ્લેષણ", "location": "સ્થાન-આધારિત", "manual": "મેન્યુઅલ ઇનપુટ" },
+    "imageAnalysis": { "title": "જમીન છબી વિશ્લેષણ", "description": "રોગ શોધ સહિત AI-આધારિત વિશ્લેષણ માટે જમીનની છબી અપલોડ કરો", "uploadPrompt": "તમારા જમીન નમૂનાની સ્પષ્ટ છબી અપલોડ કરો" },
+    "locationAnalysis": { "title": "સ્થાન-આધારિત વિશ્લેષણ", "description": "તમારા ભૌગોલિક કોઓર્ડિનેટ્સના આધારે જમીન ડેટા મેળવો", "latitude": "અક્ષાંશ", "longitude": "રેખાંશ", "getLocation": "મારું સ્થાન વાપરો", "analyze": "સ્થાન વિશ્લેષણ કરો" },
+    "results": { "title": "જમીન વિશ્લેષણ પરિણામો", "soilType": "જમીનનો પ્રકાર", "ph": "pH સ્તર", "nitrogen": "નાઇટ્રોજન (N)", "phosphorus": "ફોસ્ફરસ (P)", "potassium": "પોટેશિયમ (K)", "moisture": "ભેજ", "organicMatter": "કાર્બનિક પદાર્થ", "texture": "રચના", "drainage": "ડ્રેનેજ", "recommendations": "ભલામણો", "diseaseDetection": "રોગ શોધ", "diseases": "મળેલા રોગો", "treatments": "સારવાર ભલામણો", "noDisease": "કોઈ જમીન રોગો મળ્યા નથી" },
+    "analyzing": "જમીનનું વિશ્લેષણ થઈ રહ્યું છે...",
+    "errors": { "noImage": "કૃપા કરીને પહેલા જમીનની છબી અપલોડ કરો", "noLocation": "કૃપા કરીને કોઓર્ડિનેટ્સ આપો", "analysisFailed": "જમીન વિશ્લેષણ નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો." }
+  },
+  "weather": {
+    "title": "હવામાન આગાહી",
+    "subtitle": "તમારા સ્થાન માટે સચોટ હવામાન આગાહી અને ખેતી સલાહ મેળવો",
+    "enterLocation": "સ્થાન દાખલ કરો",
+    "locationPlaceholder": "શહેર અથવા પ્રદેશનું નામ દાખલ કરો",
+    "getWeather": "હવામાન મેળવો",
+    "loading": "હવામાન ડેટા મેળવી રહ્યા છીએ...",
+    "current": { "title": "વર્તમાન હવામાન", "temperature": "તાપમાન", "humidity": "ભેજ", "windSpeed": "પવનની ગતિ", "condition": "સ્થિતિ", "feelsLike": "અનુભવ", "uvIndex": "UV ઇન્ડેક્સ", "visibility": "દૃશ્યતા" },
+    "forecast": { "title": "5-દિવસની આગાહી", "high": "ઊંચું", "low": "નીચું" },
+    "farmingAdvice": { "title": "ખેતી સલાહ", "irrigation": "સિંચાઈ", "planting": "વાવણી", "harvesting": "લણણી", "pestControl": "જંતુ નિયંત્રણ" },
+    "errors": { "noLocation": "કૃપા કરીને સ્થાન દાખલ કરો", "fetchFailed": "હવામાન ડેટા મેળવવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો." }
+  },
+  "cropRecommendation": {
+    "title": "પાક ભલામણ",
+    "subtitle": "તમારી જમીન અને આબોહવાની પરિસ્થિતિઓના આધારે AI-આધારિત પાક સૂચનો મેળવો",
+    "form": {
+      "soilType": "જમીનનો પ્રકાર", "selectSoilType": "જમીનનો પ્રકાર પસંદ કરો",
+      "soilTypes": { "clay": "માટીની જમીન", "sandy": "રેતાળ જમીન", "loamy": "ગોરાડુ જમીન", "silty": "કાંપની જમીન", "peaty": "પીટ જમીન", "chalky": "ચૂનાની જમીન", "alluvial": "કાંપની જમીન", "red": "લાલ જમીન", "black": "કાળી જમીન", "laterite": "લેટેરાઇટ જમીન" },
+      "phLevel": "pH સ્તર", "temperature": "સરેરાશ તાપમાન (°C)", "rainfall": "વાર્ષિક વરસાદ (મીમી)", "season": "ઉગાડવાની ઋતુ", "selectSeason": "ઋતુ પસંદ કરો",
+      "seasons": { "kharif": "ખરીફ (ચોમાસું)", "rabi": "રવી (શિયાળો)", "zaid": "ઝાયદ (ઉનાળો)", "perennial": "બારમાસી" },
+      "submit": "ભલામણો મેળવો"
+    },
+    "results": { "title": "ભલામણ કરેલ પાકો", "crop": "પાક", "suitability": "યોગ્યતા", "yield": "અપેક્ષિત ઉપજ", "duration": "ઉગાડવાનો સમયગાળો", "tips": "ઉગાડવાની ટિપ્સ", "marketValue": "બજાર મૂલ્ય", "waterRequirement": "પાણીની જરૂરિયાત" },
+    "loading": "પરિસ્થિતિઓનું વિશ્લેષણ થઈ રહ્યું છે...",
+    "errors": { "fetchFailed": "ભલામણો મેળવવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો." }
+  },
+  "marketPrices": {
+    "title": "બજાર ભાવ",
+    "subtitle": "વિવિધ બજારોમાં વિવિધ પાકોના વર્તમાન બજાર ભાવો ટ્રેક કરો",
+    "searchCrop": "પાક શોધો...", "allMarkets": "બધા બજારો", "selectMarket": "બજાર પસંદ કરો",
+    "table": { "crop": "પાક", "market": "બજાર", "price": "ભાવ (₹/કિલો)", "change": "ફેરફાર", "date": "છેલ્લું અપડેટ" },
+    "priceUp": "ભાવ વધ્યો", "priceDown": "ભાવ ઘટ્યો", "noChange": "કોઈ ફેરફાર નથી",
+    "errors": { "fetchFailed": "બજાર ભાવો મેળવવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો." }
+  },
+  "notFound": { "title": "પેજ મળ્યું નથી", "message": "તમે શોધી રહ્યા છો તે પેજ અસ્તિત્વમાં નથી અથવા ખસેડવામાં આવ્યું છે.", "backHome": "હોમ પર પાછા જાઓ" },
+  "accessibility": { "languageSwitcher": "ભાષા બદલો", "mainNavigation": "મુખ્ય નેવિગેશન", "skipToContent": "મુખ્ય સામગ્રી પર જાઓ", "openMenu": "મેનુ ખોલો", "closeMenu": "મેનુ બંધ કરો" },
+  "seo": { "homeTitle": "એગ્રીસ્માર્ટ - સ્માર્ટ ખેતી સહાયક", "homeDescription": "છોડ ઓળખ, જમીન વિશ્લેષણ, હવામાન આગાહી અને પાક ભલામણો માટે AI-આધારિત ખેતી સહાયક" }
+}
