@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
   Leaf, Camera, FlaskConical, CloudSun, Sprout, Store, Menu
@@ -12,29 +13,31 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
-const mainNavItems = [
-  { to: "/dashboard", label: "Dashboard", icon: Leaf },
-  { to: "/plant-detection", label: "Plant Detection", icon: Camera },
-  { to: "/soil-analysis", label: "Soil Analysis", icon: FlaskConical },
-  { to: "/weather", label: "Weather", icon: CloudSun },
-  { to: "/crop-recommendation", label: "Crop Guide", icon: Sprout },
-];
-
-const mobileNavItems = [
-  { to: "/dashboard", label: "Home", icon: Leaf },
-  { to: "/plant-detection", label: "Plants", icon: Camera },
-  { to: "/soil-analysis", label: "Soil", icon: FlaskConical },
-  { to: "/weather", label: "Weather", icon: CloudSun },
-  { to: "/market-prices", label: "Market", icon: Store },
-];
-
 export const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
+  const { t } = useTranslation();
+
+  const mainNavItems = [
+    { to: "/dashboard", label: t('nav.dashboard'), icon: Leaf },
+    { to: "/plant-detection", label: t('nav.plantDetection'), icon: Camera },
+    { to: "/soil-analysis", label: t('nav.soilAnalysis'), icon: FlaskConical },
+    { to: "/weather", label: t('nav.weather'), icon: CloudSun },
+    { to: "/crop-recommendation", label: t('nav.cropGuide'), icon: Sprout },
+  ];
+
+  const mobileNavItems = [
+    { to: "/dashboard", label: t('nav.home'), icon: Leaf },
+    { to: "/plant-detection", label: t('nav.plants'), icon: Camera },
+    { to: "/soil-analysis", label: t('nav.soil'), icon: FlaskConical },
+    { to: "/weather", label: t('nav.weather'), icon: CloudSun },
+    { to: "/market-prices", label: t('nav.market'), icon: Store },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -53,7 +56,7 @@ export const Layout = ({ children }: LayoutProps) => {
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2 text-primary">
                     <Leaf className="h-5 w-5" />
-                    AgriSmart
+                    {t('app.name')}
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-6 flex flex-col gap-2">
@@ -74,7 +77,7 @@ export const Layout = ({ children }: LayoutProps) => {
                   ))}
                   <div className="my-2 h-px bg-border" />
                   <Link to="/market-prices" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-muted">
-                    <Store className="h-4 w-4" /> Market Prices
+                    <Store className="h-4 w-4" /> {t('nav.marketPrices')}
                   </Link>
                 </nav>
               </SheetContent>
@@ -82,7 +85,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
             <Link to="/dashboard" className="flex items-center gap-2 font-display text-xl font-bold text-primary transition-opacity hover:opacity-80">
               <Leaf className="h-6 w-6" />
-              <span className="hidden sm:inline">AgriSmart</span>
+              <span className="hidden sm:inline">{t('app.name')}</span>
             </Link>
           </div>
 
@@ -107,6 +110,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
           {/* Right Section */}
           <div className="flex items-center gap-2">
+            <LanguageSwitcher />
             <Link to="/market-prices">
               <Button variant="ghost" size="icon">
                 <Store className="h-5 w-5" />
