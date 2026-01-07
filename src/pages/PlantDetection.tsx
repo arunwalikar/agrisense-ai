@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Camera, Upload, Loader2, AlertCircle, CheckCircle } from "lucide-react";
@@ -8,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
 const PlantDetection = () => {
+  const { t } = useTranslation();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -19,8 +21,8 @@ const PlantDetection = () => {
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         toast({
-          title: "File too large",
-          description: "Please upload an image smaller than 5MB",
+          title: t('plantDetection.errors.fileTooLarge'),
+          description: t('plantDetection.errors.fileTooLargeDesc'),
           variant: "destructive",
         });
         return;
@@ -53,14 +55,14 @@ const PlantDetection = () => {
 
       setResult(data);
       toast({
-        title: "Analysis Complete",
-        description: detectDisease ? "Plant and disease analysis complete" : "Plant identified successfully",
+        title: t('plantDetection.analysisComplete'),
+        description: detectDisease ? t('plantDetection.plantAndDiseaseComplete') : t('plantDetection.plantIdentified'),
       });
     } catch (error: any) {
       console.error("Analysis error:", error);
       toast({
-        title: "Analysis Failed",
-        description: error.message || "Failed to analyze the image. Please try again.",
+        title: t('plantDetection.errors.analysisFailed'),
+        description: error.message || t('plantDetection.errors.analysisFailedDesc'),
         variant: "destructive",
       });
     } finally {
@@ -72,10 +74,10 @@ const PlantDetection = () => {
     <div className="mx-auto max-w-4xl space-y-6 pb-20 md:pb-8">
       <div className="space-y-2">
         <h1 className="font-display text-3xl font-bold text-foreground">
-          Plant Identification
+          {t('plantDetection.title')}
         </h1>
         <p className="text-muted-foreground">
-          Take a photo or upload an image to identify plant species
+          {t('plantDetection.subtitle')}
         </p>
       </div>
 
@@ -85,10 +87,10 @@ const PlantDetection = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Camera className="h-5 w-5 text-primary" />
-              Capture or Upload
+              {t('plantDetection.captureOrUpload')}
             </CardTitle>
             <CardDescription>
-              Use your camera or choose an existing image
+              {t('plantDetection.captureOrUploadDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -96,20 +98,20 @@ const PlantDetection = () => {
               {selectedImage ? (
                 <img
                   src={selectedImage}
-                  alt="Selected plant"
+                  alt={t('plantDetection.selectedPlant')}
                   className="h-full w-full object-cover"
                 />
               ) : (
                 <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
                   <Upload className="h-12 w-12" />
-                  <p className="text-sm">No image selected</p>
+                  <p className="text-sm">{t('plantDetection.noImageSelected')}</p>
                 </div>
               )}
             </div>
 
             <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3">
               <Label htmlFor="disease-toggle" className="text-sm font-medium">
-                Include Disease Detection
+                {t('plantDetection.includeDiseaseDetection')}
               </Label>
               <Switch
                 id="disease-toggle"
@@ -132,7 +134,7 @@ const PlantDetection = () => {
                   <Button variant="outline" className="w-full" asChild>
                     <span>
                       <Camera className="mr-2 h-4 w-4" />
-                      Camera
+                      {t('common.camera')}
                     </span>
                   </Button>
                 </label>
@@ -150,7 +152,7 @@ const PlantDetection = () => {
                   <Button variant="outline" className="w-full" asChild>
                     <span>
                       <Upload className="mr-2 h-4 w-4" />
-                      Upload
+                      {t('common.upload')}
                     </span>
                   </Button>
                 </label>
@@ -165,12 +167,12 @@ const PlantDetection = () => {
               {isAnalyzing ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing...
+                  {t('common.analyzing')}
                 </>
               ) : (
                 <>
                   <Camera className="mr-2 h-4 w-4" />
-                  {detectDisease ? "Analyze Plant & Disease" : "Identify Plant"}
+                  {detectDisease ? t('plantDetection.analyzePlantAndDisease') : t('plantDetection.identifyPlant')}
                 </>
               )}
             </Button>
@@ -182,17 +184,17 @@ const PlantDetection = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5 text-accent" />
-              Analysis Results
+              {t('plantDetection.analysisResults')}
             </CardTitle>
             <CardDescription>
-              Plant identification and disease diagnosis
+              {t('plantDetection.analysisResultsDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {!result && !isAnalyzing && (
               <div className="flex h-64 items-center justify-center text-muted-foreground">
                 <p className="text-center text-sm">
-                  Upload an image and click "Analyze Plant" to see results
+                  {t('plantDetection.uploadToSeeResults')}
                 </p>
               </div>
             )}
@@ -206,10 +208,10 @@ const PlantDetection = () => {
             {result && (
               <div className="space-y-4">
                 <div className="rounded-lg bg-accent/10 p-4">
-                  <h3 className="mb-2 font-semibold text-accent">Plant Species</h3>
-                  <p className="text-lg font-bold text-foreground">{result.species || "Unknown"}</p>
+                  <h3 className="mb-2 font-semibold text-accent">{t('plantDetection.plantSpecies')}</h3>
+                  <p className="text-lg font-bold text-foreground">{result.species || t('common.unknown')}</p>
                   <p className="text-sm text-muted-foreground">
-                    Confidence: {result.confidence ? `${(result.confidence * 100).toFixed(1)}%` : "N/A"}
+                    {t('common.confidence')}: {result.confidence ? `${(result.confidence * 100).toFixed(1)}%` : t('common.notAvailable')}
                   </p>
                 </div>
 
@@ -218,25 +220,25 @@ const PlantDetection = () => {
                     <div className="rounded-lg bg-destructive/10 p-4">
                       <h3 className="mb-2 flex items-center gap-2 font-semibold text-destructive">
                         <AlertCircle className="h-4 w-4" />
-                        Disease Detected
+                        {t('plantDetection.diseaseDetected')}
                       </h3>
                       <p className="mb-2 text-lg font-bold text-foreground">{result.disease}</p>
                       
                       <div className="mt-3 space-y-2 text-sm">
                         <div>
-                          <span className="font-medium">Symptoms:</span>
-                          <p className="text-muted-foreground">{result.symptoms || "Not available"}</p>
+                          <span className="font-medium">{t('plantDetection.symptoms')}:</span>
+                          <p className="text-muted-foreground">{result.symptoms || t('common.notAvailable')}</p>
                         </div>
                       </div>
                     </div>
 
                     <div className="rounded-lg bg-primary/10 p-4">
-                      <h3 className="mb-2 font-semibold text-primary">Treatment</h3>
-                      <p className="mb-2 text-sm text-muted-foreground">{result.cure || "Consult with agricultural expert"}</p>
+                      <h3 className="mb-2 font-semibold text-primary">{t('plantDetection.treatment')}</h3>
+                      <p className="mb-2 text-sm text-muted-foreground">{result.cure || t('plantDetection.consultExpert')}</p>
                       
                       {result.pesticides && (
                         <div className="mt-3">
-                          <span className="text-sm font-medium">Recommended Pesticides:</span>
+                          <span className="text-sm font-medium">{t('plantDetection.recommendedPesticides')}:</span>
                           <p className="text-sm text-muted-foreground">{result.pesticides}</p>
                         </div>
                       )}
@@ -248,10 +250,10 @@ const PlantDetection = () => {
                   <div className="rounded-lg bg-accent/10 p-4">
                     <h3 className="mb-2 flex items-center gap-2 font-semibold text-accent">
                       <CheckCircle className="h-4 w-4" />
-                      Healthy Plant
+                      {t('plantDetection.healthyPlant')}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      No diseases detected. Your plant appears to be healthy!
+                      {t('plantDetection.noDiseasesDetected')}
                     </p>
                   </div>
                 )}
@@ -264,14 +266,14 @@ const PlantDetection = () => {
       {/* Tips */}
       <Card className="border-primary/20 bg-gradient-card shadow-soft">
         <CardHeader>
-          <CardTitle className="text-lg">Tips for Best Results</CardTitle>
+          <CardTitle className="text-lg">{t('plantDetection.tipsTitle')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>• Capture the leaf in good lighting conditions</p>
-          <p>• Ensure the leaf fills most of the frame</p>
-          <p>• Focus on diseased areas if visible</p>
-          <p>• Avoid blurry or dark images</p>
-          <p>• Use images under 5MB in size</p>
+          <p>• {t('plantDetection.tips.lighting')}</p>
+          <p>• {t('plantDetection.tips.frame')}</p>
+          <p>• {t('plantDetection.tips.focus')}</p>
+          <p>• {t('plantDetection.tips.clarity')}</p>
+          <p>• {t('plantDetection.tips.size')}</p>
         </CardContent>
       </Card>
     </div>

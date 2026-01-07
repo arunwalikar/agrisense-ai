@@ -1,34 +1,37 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Camera, FlaskConical, CloudSun, Sprout, TrendingUp, Leaf } from "lucide-react";
 
 const Dashboard = () => {
+  const { t } = useTranslation();
+
   const features = [
     {
-      title: "Plant Detection",
-      description: "Upload leaf photos to identify plant species and detect diseases",
+      title: t('features.plantDetection.title'),
+      description: t('features.plantDetection.description'),
       icon: Camera,
       to: "/plant-detection",
       gradient: "from-green-500 to-emerald-600",
     },
     {
-      title: "Soil Analysis",
-      description: "Get detailed soil reports and fertilizer recommendations",
+      title: t('features.soilAnalysis.title'),
+      description: t('features.soilAnalysis.description'),
       icon: FlaskConical,
       to: "/soil-analysis",
       gradient: "from-amber-500 to-orange-600",
     },
     {
-      title: "Weather Forecast",
-      description: "Real-time weather data with farming recommendations",
+      title: t('features.weather.title'),
+      description: t('features.weather.description'),
       icon: CloudSun,
       to: "/weather",
       gradient: "from-blue-500 to-cyan-600",
     },
     {
-      title: "Crop Recommendations",
-      description: "Find the best crops based on your soil and climate",
+      title: t('features.cropRecommendations.title'),
+      description: t('features.cropRecommendations.description'),
       icon: Sprout,
       to: "/crop-recommendation",
       gradient: "from-lime-500 to-green-600",
@@ -43,24 +46,23 @@ const Dashboard = () => {
           <div className="flex items-center gap-2">
             <Leaf className="h-8 w-8" />
             <h1 className="font-display text-4xl font-bold md:text-5xl">
-              Smart Agriculture Platform
+              {t('dashboard.hero.title')}
             </h1>
           </div>
           <p className="text-lg text-white/90">
-            AI-powered tools for modern farming. Detect plant diseases, analyze soil health, 
-            monitor weather, and get personalized crop recommendations.
+            {t('dashboard.hero.subtitle')}
           </p>
           <div className="flex flex-wrap gap-3 pt-4">
             <Button size="lg" variant="secondary" asChild>
               <Link to="/plant-detection">
                 <Camera className="mr-2 h-4 w-4" />
-                Start Detection
+                {t('dashboard.hero.startDetection')}
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/20" asChild>
               <Link to="/weather">
                 <CloudSun className="mr-2 h-4 w-4" />
-                Check Weather
+                {t('dashboard.hero.checkWeather')}
               </Link>
             </Button>
           </div>
@@ -75,7 +77,7 @@ const Dashboard = () => {
         <Card className="border-primary/20 bg-gradient-card shadow-soft">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Success Rate
+              {t('dashboard.stats.successRate')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -84,7 +86,7 @@ const Dashboard = () => {
               <div className="text-3xl font-bold text-primary">98.5%</div>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Plant disease detection accuracy
+              {t('dashboard.stats.successRateDesc')}
             </p>
           </CardContent>
         </Card>
@@ -92,7 +94,7 @@ const Dashboard = () => {
         <Card className="border-primary/20 bg-gradient-card shadow-soft">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Plant Database
+              {t('dashboard.stats.plantDatabase')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -101,7 +103,7 @@ const Dashboard = () => {
               <div className="text-3xl font-bold text-primary">500+</div>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Species and diseases covered
+              {t('dashboard.stats.plantDatabaseDesc')}
             </p>
           </CardContent>
         </Card>
@@ -109,16 +111,16 @@ const Dashboard = () => {
         <Card className="border-primary/20 bg-gradient-card shadow-soft">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Weather Data
+              {t('dashboard.stats.weatherData')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
               <CloudSun className="h-5 w-5 text-accent" />
-              <div className="text-3xl font-bold text-primary">Live</div>
+              <div className="text-3xl font-bold text-primary">{t('dashboard.stats.live')}</div>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Real-time weather updates
+              {t('dashboard.stats.weatherDataDesc')}
             </p>
           </CardContent>
         </Card>
@@ -127,7 +129,7 @@ const Dashboard = () => {
       {/* Features Grid */}
       <div>
         <h2 className="mb-6 font-display text-2xl font-bold text-foreground">
-          Explore Features
+          {t('dashboard.exploreFeatures')}
         </h2>
         <div className="grid gap-6 md:grid-cols-2">
           {features.map(({ title, description, icon: Icon, to, gradient }) => (
@@ -146,7 +148,7 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <Button variant="ghost" className="w-full justify-start text-primary hover:text-primary">
-                    Get Started
+                    {t('common.getStarted')}
                     <TrendingUp className="ml-2 h-4 w-4" />
                   </Button>
                 </CardContent>

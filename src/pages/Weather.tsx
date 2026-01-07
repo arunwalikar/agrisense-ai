@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,57 +57,58 @@ const getWeatherIcon = (condition: string) => {
   return <CloudSun className="h-6 w-6 text-primary" />;
 };
 
-const getIrrigationStatus = (weatherData: WeatherData): IrrigationRecommendation => {
-  const { current, forecast } = weatherData;
-  
-  const upcomingRain = forecast.some(day => 
-    day.condition.toLowerCase().includes('rain') || 
-    (day.rainfall_chance && day.rainfall_chance > 50)
-  );
-  
-  if (current.rainfall > 5 || (current.humidity > 80 && upcomingRain)) {
-    return {
-      status: 'not_needed',
-      message: 'Irrigation not needed - sufficient moisture from rainfall',
-      schedule: 'Skip irrigation for 2-3 days'
-    };
-  }
-  
-  if (current.temperature > 30 && current.humidity < 50 && !upcomingRain) {
-    return {
-      status: 'required',
-      message: 'Irrigation strongly recommended - hot and dry conditions',
-      schedule: 'Water early morning (5-7 AM) or evening (6-8 PM)'
-    };
-  }
-  
-  if (current.humidity < 60 && !upcomingRain) {
-    return {
-      status: 'optional',
-      message: 'Light irrigation may be beneficial',
-      schedule: 'Consider watering every 2-3 days'
-    };
-  }
-  
-  return {
-    status: 'not_needed',
-    message: 'Current moisture levels appear adequate',
-    schedule: 'Monitor soil moisture and water as needed'
-  };
-};
-
 const Weather = () => {
+  const { t } = useTranslation();
   const [location, setLocation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const { toast } = useToast();
 
+  const getIrrigationStatus = (data: WeatherData): IrrigationRecommendation => {
+    const { current, forecast } = data;
+    
+    const upcomingRain = forecast.some(day => 
+      day.condition.toLowerCase().includes('rain') || 
+      (day.rainfall_chance && day.rainfall_chance > 50)
+    );
+    
+    if (current.rainfall > 5 || (current.humidity > 80 && upcomingRain)) {
+      return {
+        status: 'not_needed',
+        message: t('weather.irrigation.notNeeded'),
+        schedule: t('weather.irrigation.skipSchedule')
+      };
+    }
+    
+    if (current.temperature > 30 && current.humidity < 50 && !upcomingRain) {
+      return {
+        status: 'required',
+        message: t('weather.irrigation.required'),
+        schedule: t('weather.irrigation.requiredSchedule')
+      };
+    }
+    
+    if (current.humidity < 60 && !upcomingRain) {
+      return {
+        status: 'optional',
+        message: t('weather.irrigation.optional'),
+        schedule: t('weather.irrigation.optionalSchedule')
+      };
+    }
+    
+    return {
+      status: 'not_needed',
+      message: t('weather.irrigation.adequate'),
+      schedule: t('weather.irrigation.monitorSchedule')
+    };
+  };
+
   const fetchWeather = async (loc?: string) => {
     const searchLocation = loc || location;
     if (!searchLocation && !loc) {
       toast({
-        title: "Location Required",
-        description: "Please enter a location to get weather data",
+        title: t('weather.errors.locationRequired'),
+        description: t('weather.errors.locationRequiredDesc'),
         variant: "destructive",
       });
       return;
@@ -128,14 +130,14 @@ const Weather = () => {
 
       setWeatherData(enrichedData);
       toast({
-        title: "Weather Updated",
-        description: `Showing weather for ${data.location}`,
+        title: t('weather.updated'),
+        description: t('weather.showingFor', { location: data.location }),
       });
     } catch (error: any) {
       console.error("Weather fetch error:", error);
       toast({
-        title: "Failed to Fetch Weather",
-        description: error.message || "Could not retrieve weather data. Please try again.",
+        title: t('weather.errors.fetchFailed'),
+        description: error.message || t('weather.errors.fetchFailedDesc'),
         variant: "destructive",
       });
     } finally {
@@ -150,18 +152,18 @@ const Weather = () => {
           const { latitude, longitude } = position.coords;
           fetchWeather(`${latitude},${longitude}`);
         },
-        (error) => {
+        () => {
           toast({
-            title: "Location Error",
-            description: "Unable to get your location. Please enter manually.",
+            title: t('weather.errors.locationError'),
+            description: t('weather.errors.locationErrorDesc'),
             variant: "destructive",
           });
         }
       );
     } else {
       toast({
-        title: "Not Supported",
-        description: "Geolocation is not supported by your browser",
+        title: t('weather.errors.notSupported'),
+        description: t('weather.errors.notSupportedDesc'),
         variant: "destructive",
       });
     }
@@ -177,10 +179,10 @@ const Weather = () => {
     <div className="mx-auto max-w-4xl space-y-6 pb-20 md:pb-8">
       <div className="space-y-2">
         <h1 className="font-display text-3xl font-bold text-foreground">
-          Weather Forecast
+          {t('weather.title')}
         </h1>
         <p className="text-muted-foreground">
-          Real-time weather data with 7-day forecasts and irrigation recommendations
+          {t('weather.subtitle')}
         </p>
       </div>
 
@@ -189,16 +191,16 @@ const Weather = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MapPin className="h-5 w-5 text-primary" />
-            Location
+            {t('weather.location')}
           </CardTitle>
           <CardDescription>
-            Enter a city name or use your current location
+            {t('weather.locationDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex gap-2">
             <Input
-              placeholder="Enter city name (e.g., New York, London)"
+              placeholder={t('weather.enterCity')}
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && fetchWeather()}
@@ -211,7 +213,7 @@ const Weather = () => {
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                "Search"
+                t('common.search')
               )}
             </Button>
           </div>
@@ -222,7 +224,7 @@ const Weather = () => {
             className="w-full"
           >
             <MapPin className="mr-2 h-4 w-4" />
-            Use Current Location
+            {t('weather.useCurrentLocation')}
           </Button>
         </CardContent>
       </Card>
@@ -232,7 +234,7 @@ const Weather = () => {
           <CardContent className="flex h-64 items-center justify-center">
             <div className="flex flex-col items-center gap-3">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-muted-foreground">Fetching weather data...</p>
+              <p className="text-muted-foreground">{t('weather.fetching')}</p>
             </div>
           </CardContent>
         </Card>
@@ -248,7 +250,7 @@ const Weather = () => {
                 <CloudSun className="h-8 w-8" />
               </CardTitle>
               <CardDescription className="text-white/80">
-                {new Date().toLocaleDateString('en-US', { 
+                {new Date().toLocaleDateString(undefined, { 
                   weekday: 'long', 
                   year: 'numeric', 
                   month: 'long', 
@@ -267,7 +269,7 @@ const Weather = () => {
                   </p>
                 </div>
                 <div className="text-right text-sm text-white/80">
-                  <p>Feels like {weatherData.current?.feels_like}°C</p>
+                  <p>{t('weather.feelsLike')} {weatherData.current?.feels_like}°C</p>
                 </div>
               </div>
             </CardContent>
@@ -282,7 +284,7 @@ const Weather = () => {
                     <Droplets className="h-6 w-6 text-blue-500" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Humidity</p>
+                    <p className="text-sm text-muted-foreground">{t('weather.humidity')}</p>
                     <p className="text-2xl font-bold">{weatherData.current?.humidity}%</p>
                   </div>
                 </div>
@@ -296,7 +298,7 @@ const Weather = () => {
                     <Wind className="h-6 w-6 text-cyan-500" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Wind Speed</p>
+                    <p className="text-sm text-muted-foreground">{t('weather.windSpeed')}</p>
                     <p className="text-2xl font-bold">{weatherData.current?.wind_speed} km/h</p>
                   </div>
                 </div>
@@ -310,7 +312,7 @@ const Weather = () => {
                     <CloudRain className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Rainfall</p>
+                    <p className="text-sm text-muted-foreground">{t('weather.rainfall')}</p>
                     <p className="text-2xl font-bold">{weatherData.current?.rainfall || 0} mm</p>
                   </div>
                 </div>
@@ -324,8 +326,8 @@ const Weather = () => {
                     <ThermometerSun className="h-6 w-6 text-orange-500" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">UV Index</p>
-                    <p className="text-2xl font-bold">{weatherData.current?.uv_index || "N/A"}</p>
+                    <p className="text-sm text-muted-foreground">{t('weather.uvIndex')}</p>
+                    <p className="text-2xl font-bold">{weatherData.current?.uv_index || t('common.notAvailable')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -338,10 +340,10 @@ const Weather = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Sprout className="h-5 w-5" />
-                  Irrigation Recommendation
+                  {t('weather.irrigationRecommendation')}
                   {weatherData.irrigation_recommendation.status === 'required' && (
                     <span className="ml-2 rounded-full bg-red-500 px-2 py-0.5 text-xs font-medium text-white">
-                      Action Needed
+                      {t('weather.actionNeeded')}
                     </span>
                   )}
                 </CardTitle>
@@ -352,7 +354,7 @@ const Weather = () => {
                 </p>
                 {weatherData.irrigation_recommendation.schedule && (
                   <p className="text-sm opacity-80">
-                    <strong>Schedule:</strong> {weatherData.irrigation_recommendation.schedule}
+                    <strong>{t('weather.schedule')}:</strong> {weatherData.irrigation_recommendation.schedule}
                   </p>
                 )}
               </CardContent>
@@ -365,9 +367,9 @@ const Weather = () => {
               <CardContent className="flex items-center gap-3 pt-6">
                 <AlertTriangle className="h-6 w-6 text-yellow-600" />
                 <div>
-                  <p className="font-medium text-yellow-700 dark:text-yellow-400">High UV Alert</p>
+                  <p className="font-medium text-yellow-700 dark:text-yellow-400">{t('weather.highUvAlert')}</p>
                   <p className="text-sm text-yellow-600 dark:text-yellow-500">
-                    UV index is very high. Avoid outdoor farm work between 10 AM - 4 PM.
+                    {t('weather.highUvAlertDesc')}
                   </p>
                 </div>
               </CardContent>
@@ -380,10 +382,10 @@ const Weather = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-accent">
                   <Sprout className="h-5 w-5" />
-                  Farming Recommendations
+                  {t('weather.farmingRecommendations')}
                 </CardTitle>
                 <CardDescription>
-                  AI-powered advice based on current weather conditions
+                  {t('weather.farmingRecommendationsDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -407,10 +409,10 @@ const Weather = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-primary" />
-                  7-Day Forecast
+                  {t('weather.sevenDayForecast')}
                 </CardTitle>
                 <CardDescription>
-                  Plan your farming activities for the week ahead
+                  {t('weather.sevenDayForecastDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -425,7 +427,7 @@ const Weather = () => {
                       }`}
                     >
                       <p className={`text-sm font-medium ${idx === 0 ? 'text-primary' : 'text-muted-foreground'}`}>
-                        {idx === 0 ? 'Today' : day.day}
+                        {idx === 0 ? t('weather.today') : day.day}
                       </p>
                       <div className="my-3 flex justify-center">
                         {getWeatherIcon(day.condition)}
@@ -436,7 +438,7 @@ const Weather = () => {
                       </p>
                       {day.rainfall_chance !== undefined && day.rainfall_chance > 0 && (
                         <p className="mt-1 text-xs text-blue-500">
-                          {day.rainfall_chance}% rain
+                          {day.rainfall_chance}% {t('weather.rain')}
                         </p>
                       )}
                     </div>

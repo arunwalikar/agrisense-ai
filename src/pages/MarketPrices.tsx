@@ -1,18 +1,10 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, TrendingUp, TrendingDown, Search, Store } from "lucide-react";
-
-interface MarketPrice {
-  id: string;
-  crop_name: string;
-  market_name: string;
-  price_per_kg: number;
-  price_date: string;
-}
 
 // Sample market data (in production, this would come from an API)
 const SAMPLE_PRICES = [
@@ -29,6 +21,7 @@ const SAMPLE_PRICES = [
 ];
 
 const MarketPrices = () => {
+  const { t } = useTranslation();
   const [prices, setPrices] = useState<typeof SAMPLE_PRICES>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -61,11 +54,11 @@ const MarketPrices = () => {
   const getTrendBadge = (trend: string) => {
     switch (trend) {
       case "up":
-        return <Badge className="bg-green-500/10 text-green-600 hover:bg-green-500/20">Rising</Badge>;
+        return <Badge className="bg-green-500/10 text-green-600 hover:bg-green-500/20">{t('marketPrices.rising')}</Badge>;
       case "down":
-        return <Badge className="bg-red-500/10 text-red-600 hover:bg-red-500/20">Falling</Badge>;
+        return <Badge className="bg-red-500/10 text-red-600 hover:bg-red-500/20">{t('marketPrices.falling')}</Badge>;
       default:
-        return <Badge variant="secondary">Stable</Badge>;
+        return <Badge variant="secondary">{t('marketPrices.stable')}</Badge>;
     }
   };
 
@@ -80,15 +73,15 @@ const MarketPrices = () => {
   return (
     <div className="space-y-6 pb-20 md:pb-8">
       <div>
-        <h1 className="font-display text-3xl font-bold text-foreground">Market Prices</h1>
-        <p className="text-muted-foreground">Today's crop prices from nearby markets</p>
+        <h1 className="font-display text-3xl font-bold text-foreground">{t('marketPrices.title')}</h1>
+        <p className="text-muted-foreground">{t('marketPrices.subtitle')}</p>
       </div>
 
       {/* Search */}
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Search crop or market..."
+          placeholder={t('marketPrices.searchPlaceholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
@@ -101,9 +94,9 @@ const MarketPrices = () => {
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Highest Price</p>
+                <p className="text-sm text-muted-foreground">{t('marketPrices.highestPrice')}</p>
                 <p className="text-2xl font-bold text-green-600">₹65/kg</p>
-                <p className="text-xs text-muted-foreground">Cotton</p>
+                <p className="text-xs text-muted-foreground">{t('marketPrices.cotton')}</p>
               </div>
               <TrendingUp className="h-8 w-8 text-green-500/50" />
             </div>
@@ -114,9 +107,9 @@ const MarketPrices = () => {
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Rising Prices</p>
+                <p className="text-sm text-muted-foreground">{t('marketPrices.risingPrices')}</p>
                 <p className="text-2xl font-bold text-primary">5</p>
-                <p className="text-xs text-muted-foreground">crops</p>
+                <p className="text-xs text-muted-foreground">{t('marketPrices.crops')}</p>
               </div>
               <TrendingUp className="h-8 w-8 text-primary/50" />
             </div>
@@ -127,9 +120,9 @@ const MarketPrices = () => {
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Falling Prices</p>
+                <p className="text-sm text-muted-foreground">{t('marketPrices.fallingPrices')}</p>
                 <p className="text-2xl font-bold text-destructive">2</p>
-                <p className="text-xs text-muted-foreground">crops</p>
+                <p className="text-xs text-muted-foreground">{t('marketPrices.crops')}</p>
               </div>
               <TrendingDown className="h-8 w-8 text-destructive/50" />
             </div>
@@ -140,9 +133,9 @@ const MarketPrices = () => {
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Markets Tracked</p>
+                <p className="text-sm text-muted-foreground">{t('marketPrices.marketsTracked')}</p>
                 <p className="text-2xl font-bold">10</p>
-                <p className="text-xs text-muted-foreground">locations</p>
+                <p className="text-xs text-muted-foreground">{t('marketPrices.locations')}</p>
               </div>
               <Store className="h-8 w-8 text-muted-foreground/50" />
             </div>
@@ -153,17 +146,17 @@ const MarketPrices = () => {
       {/* Price Table */}
       <Card className="shadow-soft">
         <CardHeader>
-          <CardTitle>Today's Prices</CardTitle>
-          <CardDescription>Updated: {new Date().toLocaleDateString()}</CardDescription>
+          <CardTitle>{t('marketPrices.todaysPrices')}</CardTitle>
+          <CardDescription>{t('marketPrices.updated')}: {new Date().toLocaleDateString()}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Crop</TableHead>
-                <TableHead>Market</TableHead>
-                <TableHead className="text-right">Price (₹/kg)</TableHead>
-                <TableHead className="text-center">Trend</TableHead>
+                <TableHead>{t('marketPrices.crop')}</TableHead>
+                <TableHead>{t('marketPrices.market')}</TableHead>
+                <TableHead className="text-right">{t('marketPrices.pricePerKg')}</TableHead>
+                <TableHead className="text-center">{t('marketPrices.trend')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -185,14 +178,14 @@ const MarketPrices = () => {
 
           {filteredPrices.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
-              No matching crops found
+              {t('marketPrices.noMatchingCrops')}
             </div>
           )}
         </CardContent>
       </Card>
 
       <p className="text-xs text-muted-foreground text-center">
-        Prices are indicative and may vary. Please verify with local markets before making decisions.
+        {t('marketPrices.disclaimer')}
       </p>
     </div>
   );
