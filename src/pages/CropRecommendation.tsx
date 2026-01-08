@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const CropRecommendation = () => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -44,8 +46,8 @@ const CropRecommendation = () => {
   const fetchSoilFromLocation = async () => {
     if (!navigator.geolocation) {
       toast({
-        title: "Geolocation Not Supported",
-        description: "Your browser doesn't support geolocation",
+        title: t('cropRecommendation.geolocationNotSupported'),
+        description: t('cropRecommendation.browserNotSupported'),
         variant: "destructive",
       });
       return;
@@ -96,14 +98,14 @@ const CropRecommendation = () => {
           setLocationInfo(`📍 ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
 
           toast({
-            title: "Soil Data Retrieved",
-            description: "Form auto-filled with your location's soil conditions",
+            title: t('cropRecommendation.soilDataRetrieved'),
+            description: t('cropRecommendation.formAutoFilled'),
           });
         } catch (error: any) {
           console.error("Failed to fetch soil data:", error);
           toast({
-            title: "Failed to Fetch Soil Data",
-            description: error.message || "Could not retrieve soil data for your location",
+            title: t('cropRecommendation.failedToFetchSoil'),
+            description: error.message || t('cropRecommendation.couldNotRetrieveSoil'),
             variant: "destructive",
           });
         } finally {
@@ -113,8 +115,8 @@ const CropRecommendation = () => {
       (error) => {
         setIsFetchingLocation(false);
         toast({
-          title: "Location Error",
-          description: error.message || "Could not get your location",
+          title: t('cropRecommendation.locationError'),
+          description: error.message || t('cropRecommendation.couldNotGetLocation'),
           variant: "destructive",
         });
       },
@@ -125,8 +127,8 @@ const CropRecommendation = () => {
   const getCropRecommendations = async () => {
     if (!formData.soilType || !formData.ph || !formData.temperature || !formData.season) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields",
+        title: t('cropRecommendation.missingInfo'),
+        description: t('cropRecommendation.fillAllFields'),
         variant: "destructive",
       });
       return;
@@ -150,14 +152,14 @@ const CropRecommendation = () => {
 
       setResult(data);
       toast({
-        title: "Recommendations Ready",
-        description: "Best crops identified for your conditions",
+        title: t('cropRecommendation.recommendationsReady'),
+        description: t('cropRecommendation.bestCropsIdentified'),
       });
     } catch (error: any) {
       console.error("Recommendation error:", error);
       toast({
-        title: "Failed to Get Recommendations",
-        description: error.message || "Could not generate recommendations. Please try again.",
+        title: t('cropRecommendation.failedToGetRecommendations'),
+        description: error.message || t('cropRecommendation.couldNotGenerateRecommendations'),
         variant: "destructive",
       });
     } finally {
@@ -168,8 +170,8 @@ const CropRecommendation = () => {
   const checkSoilSuitability = async () => {
     if (!suitabilityData.cropName) {
       toast({
-        title: "Missing Information",
-        description: "Please enter a crop name",
+        title: t('cropRecommendation.missingInfo'),
+        description: t('cropRecommendation.enterCropName'),
         variant: "destructive",
       });
       return;
@@ -193,14 +195,14 @@ const CropRecommendation = () => {
 
       setSuitabilityResult(data);
       toast({
-        title: "Analysis Complete",
-        description: "Soil suitability analysis ready",
+        title: t('cropRecommendation.analysisComplete'),
+        description: t('cropRecommendation.suitabilityAnalysisReady'),
       });
     } catch (error: any) {
       console.error("Suitability analysis error:", error);
       toast({
-        title: "Failed to Analyze Suitability",
-        description: error.message || "Could not analyze soil suitability. Please try again.",
+        title: t('cropRecommendation.failedToAnalyzeSuitability'),
+        description: error.message || t('cropRecommendation.couldNotAnalyzeSuitability'),
         variant: "destructive",
       });
     } finally {
@@ -212,17 +214,17 @@ const CropRecommendation = () => {
     <div className="mx-auto max-w-4xl space-y-6 pb-20 md:pb-8">
       <div className="space-y-2">
         <h1 className="font-display text-3xl font-bold text-foreground">
-          Crop Guide & Recommendations
+          {t('cropRecommendation.title')}
         </h1>
         <p className="text-muted-foreground">
-          Get crop suggestions and check soil suitability for specific crops
+          {t('cropRecommendation.subtitle')}
         </p>
       </div>
 
       <Tabs defaultValue="recommend" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="recommend">Crop Recommendations</TabsTrigger>
-          <TabsTrigger value="suitability">Soil Suitability Check</TabsTrigger>
+          <TabsTrigger value="recommend">{t('cropRecommendation.tabRecommend')}</TabsTrigger>
+          <TabsTrigger value="suitability">{t('cropRecommendation.tabSuitability')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="recommend" className="space-y-6">
@@ -232,10 +234,10 @@ const CropRecommendation = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sprout className="h-5 w-5 text-primary" />
-              Farm Conditions
+              {t('cropRecommendation.farmConditions')}
             </CardTitle>
             <CardDescription>
-              Provide details about your farming conditions
+              {t('cropRecommendation.farmConditionsDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -250,12 +252,12 @@ const CropRecommendation = () => {
                 {isFetchingLocation ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Fetching Soil Data...
+                    {t('cropRecommendation.fetchingSoilData')}
                   </>
                 ) : (
                   <>
                     <MapPin className="mr-2 h-4 w-4" />
-                    Auto-Fill from My Location
+                    {t('cropRecommendation.autoFillLocation')}
                   </>
                 )}
               </Button>
@@ -269,83 +271,83 @@ const CropRecommendation = () => {
                 <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">or enter manually</span>
+                <span className="bg-card px-2 text-muted-foreground">{t('cropRecommendation.orEnterManually')}</span>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="soilType">Soil Type *</Label>
+              <Label htmlFor="soilType">{t('cropRecommendation.soilType')} *</Label>
               <Select
                 value={formData.soilType}
                 onValueChange={(value) => handleInputChange("soilType", value)}
               >
                 <SelectTrigger id="soilType">
-                  <SelectValue placeholder="Select soil type" />
+                  <SelectValue placeholder={t('cropRecommendation.selectSoilType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sandy">Sandy</SelectItem>
-                  <SelectItem value="loamy">Loamy</SelectItem>
-                  <SelectItem value="clay">Clay</SelectItem>
-                  <SelectItem value="silty">Silty</SelectItem>
-                  <SelectItem value="peaty">Peaty</SelectItem>
-                  <SelectItem value="chalky">Chalky</SelectItem>
+                  <SelectItem value="sandy">{t('cropRecommendation.soilTypes.sandy')}</SelectItem>
+                  <SelectItem value="loamy">{t('cropRecommendation.soilTypes.loamy')}</SelectItem>
+                  <SelectItem value="clay">{t('cropRecommendation.soilTypes.clay')}</SelectItem>
+                  <SelectItem value="silty">{t('cropRecommendation.soilTypes.silty')}</SelectItem>
+                  <SelectItem value="peaty">{t('cropRecommendation.soilTypes.peaty')}</SelectItem>
+                  <SelectItem value="chalky">{t('cropRecommendation.soilTypes.chalky')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="ph">Soil pH *</Label>
+              <Label htmlFor="ph">{t('cropRecommendation.soilPh')} *</Label>
               <Input
                 id="ph"
                 type="number"
                 step="0.1"
                 min="0"
                 max="14"
-                placeholder="e.g., 6.5"
+                placeholder={t('cropRecommendation.phPlaceholder')}
                 value={formData.ph}
                 onChange={(e) => handleInputChange("ph", e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="temperature">Average Temperature (°C) *</Label>
+              <Label htmlFor="temperature">{t('cropRecommendation.temperature')} *</Label>
               <Input
                 id="temperature"
                 type="number"
                 step="0.1"
-                placeholder="e.g., 25"
+                placeholder={t('cropRecommendation.temperaturePlaceholder')}
                 value={formData.temperature}
                 onChange={(e) => handleInputChange("temperature", e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="rainfall">Annual Rainfall (mm)</Label>
+              <Label htmlFor="rainfall">{t('cropRecommendation.rainfall')}</Label>
               <Input
                 id="rainfall"
                 type="number"
                 step="1"
-                placeholder="e.g., 800"
+                placeholder={t('cropRecommendation.rainfallPlaceholder')}
                 value={formData.rainfall}
                 onChange={(e) => handleInputChange("rainfall", e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="season">Growing Season *</Label>
+              <Label htmlFor="season">{t('cropRecommendation.season')} *</Label>
               <Select
                 value={formData.season}
                 onValueChange={(value) => handleInputChange("season", value)}
               >
                 <SelectTrigger id="season">
-                  <SelectValue placeholder="Select season" />
+                  <SelectValue placeholder={t('cropRecommendation.selectSeason')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="spring">Spring</SelectItem>
-                  <SelectItem value="summer">Summer</SelectItem>
-                  <SelectItem value="autumn">Autumn/Fall</SelectItem>
-                  <SelectItem value="winter">Winter</SelectItem>
-                  <SelectItem value="monsoon">Monsoon</SelectItem>
+                  <SelectItem value="spring">{t('cropRecommendation.seasons.spring')}</SelectItem>
+                  <SelectItem value="summer">{t('cropRecommendation.seasons.summer')}</SelectItem>
+                  <SelectItem value="autumn">{t('cropRecommendation.seasons.autumn')}</SelectItem>
+                  <SelectItem value="winter">{t('cropRecommendation.seasons.winter')}</SelectItem>
+                  <SelectItem value="monsoon">{t('cropRecommendation.seasons.monsoon')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -358,12 +360,12 @@ const CropRecommendation = () => {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing...
+                  {t('common.loading')}
                 </>
               ) : (
                 <>
                   <Sprout className="mr-2 h-4 w-4" />
-                  Get Recommendations
+                  {t('cropRecommendation.getRecommendations')}
                 </>
               )}
             </Button>
@@ -375,17 +377,17 @@ const CropRecommendation = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-accent" />
-              Recommended Crops
+              {t('cropRecommendation.recommendedCrops')}
             </CardTitle>
             <CardDescription>
-              Best crops for your conditions
+              {t('cropRecommendation.bestCropsForConditions')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {!result && !isLoading && (
               <div className="flex h-[500px] items-center justify-center text-muted-foreground">
                 <p className="text-center text-sm">
-                  Fill in the form and click "Get Recommendations" to see suitable crops
+                  {t('cropRecommendation.fillFormToSee')}
                 </p>
               </div>
             )}
@@ -399,7 +401,7 @@ const CropRecommendation = () => {
             {result && (
               <div className="space-y-4">
                 <div className="rounded-lg bg-accent/10 p-4">
-                  <h3 className="mb-3 font-semibold text-accent">Top Recommendations</h3>
+                  <h3 className="mb-3 font-semibold text-accent">{t('cropRecommendation.topRecommendations')}</h3>
                   <div className="space-y-3">
                     {result.crops?.map((crop: any, idx: number) => (
                       <div
@@ -414,19 +416,19 @@ const CropRecommendation = () => {
                             </p>
                           </div>
                           <span className="rounded-full bg-accent/20 px-2 py-1 text-xs font-medium text-accent">
-                            {crop.suitability}% Match
+                            {crop.suitability}% {t('cropRecommendation.match')}
                           </span>
                         </div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           <span className="rounded-full bg-primary/10 px-2 py-1 text-xs text-primary">
-                            Growth: {crop.growth_period}
+                            {t('cropRecommendation.growth')}: {crop.growth_period}
                           </span>
                           <span className="rounded-full bg-primary/10 px-2 py-1 text-xs text-primary">
-                            Yield: {crop.expected_yield}
+                            {t('cropRecommendation.yield')}: {crop.expected_yield}
                           </span>
                         </div>
                       </div>
-                    )) || <p className="text-sm text-muted-foreground">No crops available</p>}
+                    )) || <p className="text-sm text-muted-foreground">{t('cropRecommendation.noCropsAvailable')}</p>}
                   </div>
                 </div>
 
@@ -435,7 +437,7 @@ const CropRecommendation = () => {
                     <div className="rounded-lg bg-primary/10 p-4">
                       <h3 className="mb-3 flex items-center gap-2 font-semibold text-primary">
                         <Calendar className="h-4 w-4" />
-                        Monthly Farming Plan: {result.selected_crop}
+                        {t('cropRecommendation.monthlyFarmingPlan')}: {result.selected_crop}
                       </h3>
                       <div className="space-y-2">
                         {result.farming_plan?.map((month: any, idx: number) => (
@@ -451,26 +453,26 @@ const CropRecommendation = () => {
                               {month.activities}
                             </p>
                           </div>
-                        )) || <p className="text-sm text-muted-foreground">No plan available</p>}
+                        )) || <p className="text-sm text-muted-foreground">{t('cropRecommendation.noPlanAvailable')}</p>}
                       </div>
                     </div>
 
                     <div className="rounded-lg bg-blue-500/10 p-4">
                       <h3 className="mb-2 flex items-center gap-2 font-semibold text-blue-600">
                         <Droplets className="h-4 w-4" />
-                        Water Requirements
+                        {t('cropRecommendation.waterRequirements')}
                       </h3>
                       <p className="text-sm text-muted-foreground">
-                        {result.water_requirements || "Standard irrigation practices apply"}
+                        {result.water_requirements || t('cropRecommendation.standardIrrigation')}
                       </p>
                     </div>
 
                     <div className="rounded-lg bg-secondary p-4">
-                      <h3 className="mb-2 font-semibold text-foreground">Additional Tips</h3>
+                      <h3 className="mb-2 font-semibold text-foreground">{t('cropRecommendation.additionalTips')}</h3>
                       <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
                         {result.tips?.map((tip: string, idx: number) => (
                           <li key={idx}>{tip}</li>
-                        )) || <li>Consult with local agricultural experts</li>}
+                        )) || <li>{t('cropRecommendation.consultExperts')}</li>}
                       </ul>
                     </div>
                   </>
@@ -484,24 +486,24 @@ const CropRecommendation = () => {
           {/* Info Card */}
           <Card className="border-primary/20 bg-gradient-card shadow-soft">
             <CardHeader>
-              <CardTitle className="text-lg">Factors Affecting Crop Selection</CardTitle>
+              <CardTitle className="text-lg">{t('cropRecommendation.factorsTitle')}</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3 text-sm text-muted-foreground md:grid-cols-2">
               <div>
-                <h4 className="mb-1 font-medium text-foreground">Soil Conditions</h4>
-                <p>pH levels, nutrient content, drainage, and soil texture</p>
+                <h4 className="mb-1 font-medium text-foreground">{t('cropRecommendation.factorsSoil')}</h4>
+                <p>{t('cropRecommendation.factorsSoilDesc')}</p>
               </div>
               <div>
-                <h4 className="mb-1 font-medium text-foreground">Climate</h4>
-                <p>Temperature range, rainfall patterns, and seasonal variations</p>
+                <h4 className="mb-1 font-medium text-foreground">{t('cropRecommendation.factorsClimate')}</h4>
+                <p>{t('cropRecommendation.factorsClimateDesc')}</p>
               </div>
               <div>
-                <h4 className="mb-1 font-medium text-foreground">Water Availability</h4>
-                <p>Irrigation facilities and natural water sources</p>
+                <h4 className="mb-1 font-medium text-foreground">{t('cropRecommendation.factorsWater')}</h4>
+                <p>{t('cropRecommendation.factorsWaterDesc')}</p>
               </div>
               <div>
-                <h4 className="mb-1 font-medium text-foreground">Market Demand</h4>
-                <p>Local market prices and crop profitability</p>
+                <h4 className="mb-1 font-medium text-foreground">{t('cropRecommendation.factorsMarket')}</h4>
+                <p>{t('cropRecommendation.factorsMarketDesc')}</p>
               </div>
             </CardContent>
           </Card>
@@ -514,73 +516,73 @@ const CropRecommendation = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FlaskConical className="h-5 w-5 text-primary" />
-                  Soil Suitability Analysis
+                  {t('cropRecommendation.suitabilityTitle')}
                 </CardTitle>
                 <CardDescription>
-                  Check if your soil is suitable for a specific crop
+                  {t('cropRecommendation.suitabilityDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="cropNameCheck">Crop Name *</Label>
+                  <Label htmlFor="cropNameCheck">{t('cropRecommendation.cropName')} *</Label>
                   <Input
                     id="cropNameCheck"
-                    placeholder="e.g., Wheat, Rice, Corn"
+                    placeholder={t('cropRecommendation.cropNamePlaceholder')}
                     value={suitabilityData.cropName}
                     onChange={(e) => setSuitabilityData({ ...suitabilityData, cropName: e.target.value })}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="soilTypeCheck">Soil Type</Label>
+                  <Label htmlFor="soilTypeCheck">{t('cropRecommendation.soilType')}</Label>
                   <Select
                     value={suitabilityData.soilType}
                     onValueChange={(value) => setSuitabilityData({ ...suitabilityData, soilType: value })}
                   >
                     <SelectTrigger id="soilTypeCheck">
-                      <SelectValue placeholder="Select soil type" />
+                      <SelectValue placeholder={t('cropRecommendation.selectSoilType')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="sandy">Sandy</SelectItem>
-                      <SelectItem value="loamy">Loamy</SelectItem>
-                      <SelectItem value="clay">Clay</SelectItem>
-                      <SelectItem value="silty">Silty</SelectItem>
-                      <SelectItem value="peaty">Peaty</SelectItem>
-                      <SelectItem value="chalky">Chalky</SelectItem>
+                      <SelectItem value="sandy">{t('cropRecommendation.soilTypes.sandy')}</SelectItem>
+                      <SelectItem value="loamy">{t('cropRecommendation.soilTypes.loamy')}</SelectItem>
+                      <SelectItem value="clay">{t('cropRecommendation.soilTypes.clay')}</SelectItem>
+                      <SelectItem value="silty">{t('cropRecommendation.soilTypes.silty')}</SelectItem>
+                      <SelectItem value="peaty">{t('cropRecommendation.soilTypes.peaty')}</SelectItem>
+                      <SelectItem value="chalky">{t('cropRecommendation.soilTypes.chalky')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phCheck">Soil pH</Label>
+                  <Label htmlFor="phCheck">{t('cropRecommendation.soilPh')}</Label>
                   <Input
                     id="phCheck"
                     type="number"
                     step="0.1"
-                    placeholder="e.g., 6.5"
+                    placeholder={t('cropRecommendation.phPlaceholder')}
                     value={suitabilityData.ph}
                     onChange={(e) => setSuitabilityData({ ...suitabilityData, ph: e.target.value })}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="temperatureCheck">Average Temperature (°C)</Label>
+                  <Label htmlFor="temperatureCheck">{t('cropRecommendation.temperature')}</Label>
                   <Input
                     id="temperatureCheck"
                     type="number"
                     step="0.1"
-                    placeholder="e.g., 25"
+                    placeholder={t('cropRecommendation.temperaturePlaceholder')}
                     value={suitabilityData.temperature}
                     onChange={(e) => setSuitabilityData({ ...suitabilityData, temperature: e.target.value })}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="rainfallCheck">Annual Rainfall (mm)</Label>
+                  <Label htmlFor="rainfallCheck">{t('cropRecommendation.rainfall')}</Label>
                   <Input
                     id="rainfallCheck"
                     type="number"
-                    placeholder="e.g., 800"
+                    placeholder={t('cropRecommendation.rainfallPlaceholder')}
                     value={suitabilityData.rainfall}
                     onChange={(e) => setSuitabilityData({ ...suitabilityData, rainfall: e.target.value })}
                   />
@@ -594,12 +596,12 @@ const CropRecommendation = () => {
                   {isSuitabilityLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Analyzing...
+                      {t('common.loading')}
                     </>
                   ) : (
                     <>
                       <FlaskConical className="mr-2 h-4 w-4" />
-                      Check Suitability
+                      {t('cropRecommendation.checkSuitability')}
                     </>
                   )}
                 </Button>
@@ -611,17 +613,17 @@ const CropRecommendation = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-accent" />
-                  Suitability Report
+                  {t('cropRecommendation.suitabilityReport')}
                 </CardTitle>
                 <CardDescription>
-                  Detailed soil suitability analysis
+                  {t('cropRecommendation.suitabilityReportDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {!suitabilityResult && !isSuitabilityLoading && (
                   <div className="flex h-[500px] items-center justify-center text-muted-foreground">
                     <p className="text-center text-sm">
-                      Enter crop name and soil conditions to check suitability
+                      {t('cropRecommendation.enterCropToCheck')}
                     </p>
                   </div>
                 )}
@@ -637,10 +639,10 @@ const CropRecommendation = () => {
                     <div className={`rounded-lg p-4 ${suitabilityResult.is_suitable ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
                       <div className="flex items-center justify-between">
                         <h3 className={`font-semibold ${suitabilityResult.is_suitable ? 'text-green-600' : 'text-red-600'}`}>
-                          {suitabilityResult.is_suitable ? 'Suitable ✓' : 'Not Suitable ✗'}
+                          {suitabilityResult.is_suitable ? t('cropRecommendation.suitable') : t('cropRecommendation.notSuitable')}
                         </h3>
                         <span className={`rounded-full px-3 py-1 text-sm font-bold ${suitabilityResult.is_suitable ? 'bg-green-500/20 text-green-600' : 'bg-red-500/20 text-red-600'}`}>
-                          {suitabilityResult.suitability_score}% Match
+                          {suitabilityResult.suitability_score}% {t('cropRecommendation.match')}
                         </span>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">
@@ -650,7 +652,7 @@ const CropRecommendation = () => {
 
                     {suitabilityResult.current_conditions_analysis && (
                       <div className="rounded-lg bg-secondary p-4">
-                        <h3 className="mb-3 font-semibold text-foreground">Current Conditions</h3>
+                        <h3 className="mb-3 font-semibold text-foreground">{t('cropRecommendation.currentConditions')}</h3>
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           {Object.entries(suitabilityResult.current_conditions_analysis).map(([key, value]: [string, any]) => (
                             <div key={key} className="flex items-center justify-between rounded bg-background p-2">
@@ -670,23 +672,23 @@ const CropRecommendation = () => {
 
                     {suitabilityResult.soil_requirements && (
                       <div className="rounded-lg bg-primary/10 p-4">
-                        <h3 className="mb-3 font-semibold text-primary">Ideal Requirements</h3>
+                        <h3 className="mb-3 font-semibold text-primary">{t('cropRecommendation.idealRequirements')}</h3>
                         <div className="space-y-2 text-sm">
                           {suitabilityResult.soil_requirements.ideal_ph && (
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">pH:</span>
+                              <span className="text-muted-foreground">{t('cropRecommendation.phLabel')}:</span>
                               <span className="font-medium text-foreground">{suitabilityResult.soil_requirements.ideal_ph}</span>
                             </div>
                           )}
                           {suitabilityResult.soil_requirements.ideal_temperature && (
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Temperature:</span>
+                              <span className="text-muted-foreground">{t('cropRecommendation.temperatureLabel')}:</span>
                               <span className="font-medium text-foreground">{suitabilityResult.soil_requirements.ideal_temperature}</span>
                             </div>
                           )}
                           {suitabilityResult.soil_requirements.ideal_rainfall && (
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Rainfall:</span>
+                              <span className="text-muted-foreground">{t('cropRecommendation.rainfallLabel')}:</span>
                               <span className="font-medium text-foreground">{suitabilityResult.soil_requirements.ideal_rainfall}</span>
                             </div>
                           )}
@@ -696,7 +698,7 @@ const CropRecommendation = () => {
 
                     {suitabilityResult.recommendations && suitabilityResult.recommendations.length > 0 && (
                       <div className="rounded-lg bg-accent/10 p-4">
-                        <h3 className="mb-2 font-semibold text-accent">Recommendations</h3>
+                        <h3 className="mb-2 font-semibold text-accent">{t('cropRecommendation.recommendations')}</h3>
                         <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
                           {suitabilityResult.recommendations.map((rec: string, idx: number) => (
                             <li key={idx}>{rec}</li>
@@ -707,7 +709,7 @@ const CropRecommendation = () => {
 
                     {suitabilityResult.alternative_crops && suitabilityResult.alternative_crops.length > 0 && (
                       <div className="rounded-lg bg-blue-500/10 p-4">
-                        <h3 className="mb-2 font-semibold text-blue-600">Alternative Crops</h3>
+                        <h3 className="mb-2 font-semibold text-blue-600">{t('cropRecommendation.alternativeCrops')}</h3>
                         <div className="flex flex-wrap gap-2">
                           {suitabilityResult.alternative_crops.map((crop: string, idx: number) => (
                             <span
