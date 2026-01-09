@@ -19,7 +19,8 @@
     "upload": "Upload",
     "selectLanguage": "Select Language",
     "noData": "No data available",
-    "tryAgain": "Try Again"
+    "tryAgain": "Try Again",
+    "getStarted": "Get Started"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -33,6 +34,22 @@
     "title": "Welcome to AgriSmart",
     "subtitle": "Your Smart Farming Assistant",
     "description": "AgriSmart helps farmers make better decisions using AI-powered insights for plant health, soil analysis, weather forecasting, and crop recommendations.",
+    "hero": {
+      "title": "AgriSmart",
+      "subtitle": "Empowering farmers with AI-driven insights for healthier crops, better yields, and sustainable farming practices.",
+      "startDetection": "Start Plant Detection",
+      "checkWeather": "Check Weather"
+    },
+    "stats": {
+      "successRate": "Detection Accuracy",
+      "successRateDesc": "AI-powered plant identification accuracy",
+      "plantDatabase": "Plant Species",
+      "plantDatabaseDesc": "Extensive database of crops and plants",
+      "weatherData": "Weather Updates",
+      "weatherDataDesc": "Real-time weather forecasting",
+      "live": "Live"
+    },
+    "exploreFeatures": "Explore Our Features",
     "features": {
       "plantDetection": {
         "title": "Plant Detection",
@@ -60,6 +77,24 @@
       "analysesCompleted": "Analyses Completed",
       "cropsRecommended": "Crops Recommended",
       "weatherUpdates": "Weather Updates"
+    }
+  },
+  "features": {
+    "plantDetection": {
+      "title": "Plant & Disease Detection",
+      "description": "Upload plant leaf images to identify species and detect diseases with AI-powered analysis"
+    },
+    "soilAnalysis": {
+      "title": "Soil Health Analysis",
+      "description": "Analyze soil quality, detect deficiencies, and get fertilizer recommendations"
+    },
+    "weather": {
+      "title": "Weather Forecasting",
+      "description": "Get accurate 7-day weather forecasts with farming advice for your location"
+    },
+    "cropRecommendations": {
+      "title": "Smart Crop Recommendations",
+      "description": "Receive personalized crop suggestions based on your soil type and climate conditions"
     }
   },
   "plantDetection": {
