@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 
 const SoilAnalysis = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
@@ -48,7 +48,7 @@ const SoilAnalysis = () => {
     setIsAnalyzing(true);
     setResult(null);
     try {
-      const { data, error } = await supabase.functions.invoke('analyze-soil', { body: { image: selectedImage, useImageAnalysis: true } });
+      const { data, error } = await supabase.functions.invoke('analyze-soil', { body: { image: selectedImage, useImageAnalysis: true, language: i18n.language } });
       if (error) throw error;
       setResult(data);
       toast({ title: t('soilAnalysis.analysisComplete'), description: t('soilAnalysis.imageAnalyzed') });
@@ -67,7 +67,7 @@ const SoilAnalysis = () => {
       const position = await new Promise<GeolocationPosition>((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
       const { latitude, longitude } = position.coords;
       setLocation({ lat: latitude, lon: longitude });
-      const { data, error } = await supabase.functions.invoke('analyze-soil', { body: { latitude, longitude, useDigitalData: true } });
+      const { data, error } = await supabase.functions.invoke('analyze-soil', { body: { latitude, longitude, useDigitalData: true, language: i18n.language } });
       if (error) throw error;
       setResult(data);
       toast({ title: t('soilAnalysis.analysisComplete'), description: t('soilAnalysis.digitalDataFetched') });

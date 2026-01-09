@@ -5,6 +5,20 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Language mapping for AI responses
+const languageMap: Record<string, string> = {
+  'en': 'English',
+  'kn': 'Kannada',
+  'hi': 'Hindi',
+  'ta': 'Tamil',
+  'te': 'Telugu',
+  'ml': 'Malayalam',
+  'mr': 'Marathi',
+  'gu': 'Gujarati',
+  'bn': 'Bengali',
+  'ur': 'Urdu'
+};
+
 // Input validation helpers
 function validateImageAnalysis(body: Record<string, unknown>): { image: string } {
   const { image } = body;
@@ -61,6 +75,11 @@ serve(async (req) => {
 
     let messages: any[];
 
+    // Get language from request body
+    const language = typeof body.language === 'string' && languageMap[body.language] ? body.language : 'en';
+    const targetLanguage = languageMap[language];
+    console.log(`Analyzing soil (language: ${targetLanguage})...`);
+
     // Check if this is an image-based soil analysis with disease detection
     if (body.useImageAnalysis && body.image) {
       const { image } = validateImageAnalysis(body);
@@ -76,6 +95,8 @@ serve(async (req) => {
 4. Signs of soil-borne diseases
 5. Agricultural recommendations
 
+IMPORTANT: Respond entirely in ${targetLanguage} language. All text values must be in ${targetLanguage}.
+
 Provide detailed, actionable insights for farmers.`
         },
         {
@@ -83,39 +104,39 @@ Provide detailed, actionable insights for farmers.`
           content: [
             {
               type: 'text',
-              text: `Analyze this soil sample image comprehensively. Detect any diseases, fungal infections, or pathogens. Provide analysis in JSON format:
+              text: `Analyze this soil sample image comprehensively. Detect any diseases, fungal infections, or pathogens. Respond in ${targetLanguage}. Provide analysis in JSON format:
 {
-  "visual_assessment": "description of soil appearance",
-  "category": "soil type (Sandy Loam, Clay, Loamy, etc.)",
-  "quality": "Overall quality rating (Excellent/Good/Fair/Poor)",
-  "texture": "soil texture",
-  "color": "soil color and implications",
-  "moisture_appearance": "dry/moist/wet",
-  "organic_matter": "Low/Medium/High",
+  "visual_assessment": "description of soil appearance in ${targetLanguage}",
+  "category": "soil type in ${targetLanguage} (Sandy Loam, Clay, Loamy, etc.)",
+  "quality": "Overall quality rating in ${targetLanguage} (Excellent/Good/Fair/Poor)",
+  "texture": "soil texture in ${targetLanguage}",
+  "color": "soil color and implications in ${targetLanguage}",
+  "moisture_appearance": "dry/moist/wet in ${targetLanguage}",
+  "organic_matter": "Low/Medium/High in ${targetLanguage}",
   "estimated_ph": "pH range estimate",
-  "nitrogen_status": "Low/Adequate/High",
-  "phosphorus_status": "Low/Adequate/High",
-  "potassium_status": "Low/Adequate/High",
-  "health_status": "Overall soil health assessment",
+  "nitrogen_status": "Low/Adequate/High in ${targetLanguage}",
+  "phosphorus_status": "Low/Adequate/High in ${targetLanguage}",
+  "potassium_status": "Low/Adequate/High in ${targetLanguage}",
+  "health_status": "Overall soil health assessment in ${targetLanguage}",
   "diseases_detected": [
     {
-      "name": "disease name",
-      "severity": "Low/Medium/High",
-      "description": "brief description of the disease"
+      "name": "disease name in ${targetLanguage}",
+      "severity": "Low/Medium/High in ${targetLanguage}",
+      "description": "brief description in ${targetLanguage}"
     }
   ],
   "fungal_infections": [
     {
-      "name": "fungal pathogen name",
-      "severity": "Low/Medium/High", 
-      "description": "signs and symptoms observed"
+      "name": "fungal pathogen name in ${targetLanguage}",
+      "severity": "Low/Medium/High in ${targetLanguage}", 
+      "description": "signs and symptoms in ${targetLanguage}"
     }
   ],
-  "treatment_recommendations": "specific treatments for detected issues",
-  "deficiencies": ["list of nutrient deficiencies"],
-  "suitable_crops": ["5-8 suitable crops"],
-  "fertilizer_recommendations": "detailed fertilizer advice",
-  "additional_notes": "other observations"
+  "treatment_recommendations": "specific treatments in ${targetLanguage}",
+  "deficiencies": ["list of nutrient deficiencies in ${targetLanguage}"],
+  "suitable_crops": ["5-8 suitable crops in ${targetLanguage}"],
+  "fertilizer_recommendations": "detailed fertilizer advice in ${targetLanguage}",
+  "additional_notes": "other observations in ${targetLanguage}"
 }
 
 If no diseases or infections are detected, return empty arrays for diseases_detected and fungal_infections, and provide a positive health_status message.`
@@ -137,32 +158,34 @@ If no diseases or infections are detected, return empty arrays for diseases_dete
 
 Use your knowledge of soil types, climate zones, agricultural patterns, and common soil-borne diseases in this region.
 
+IMPORTANT: Respond entirely in ${targetLanguage} language. All text values must be in ${targetLanguage}.
+
 Provide comprehensive soil analysis in JSON format:
 {
-  "location": "Approximate region/area name",
-  "category": "soil type category (e.g., Sandy Loam, Clay, Alluvial, Red Soil, etc.)",
-  "quality": "Overall quality rating (Excellent/Good/Fair/Poor)",
+  "location": "Approximate region/area name in ${targetLanguage}",
+  "category": "soil type category in ${targetLanguage} (e.g., Sandy Loam, Clay, Alluvial, Red Soil, etc.)",
+  "quality": "Overall quality rating in ${targetLanguage} (Excellent/Good/Fair/Poor)",
   "ph": "pH value (e.g., 6.5)",
   "nitrogen": "Nitrogen level in mg/kg",
   "phosphorus": "Phosphorus level in mg/kg",
   "potassium": "Potassium level in mg/kg",
-  "nitrogen_status": "status (Low/Adequate/High)",
-  "phosphorus_status": "status (Low/Adequate/High)",
-  "potassium_status": "status (Low/Adequate/High)",
+  "nitrogen_status": "status in ${targetLanguage} (Low/Adequate/High)",
+  "phosphorus_status": "status in ${targetLanguage} (Low/Adequate/High)",
+  "potassium_status": "status in ${targetLanguage} (Low/Adequate/High)",
   "moisture": "Typical moisture percentage",
-  "health_status": "General soil health in this region",
-  "common_diseases": ["list of common soil diseases in this region"],
-  "common_fungi": ["list of common fungal pathogens in this region"],
-  "prevention_tips": "preventive measures for common soil issues",
-  "deficiencies": ["common deficiencies in this region"],
-  "suitable_crops": ["5-8 crops suitable for this region"],
-  "fertilizer_recommendations": "fertilizer recommendations based on soil type"
+  "health_status": "General soil health in ${targetLanguage}",
+  "common_diseases": ["list of common soil diseases in ${targetLanguage}"],
+  "common_fungi": ["list of common fungal pathogens in ${targetLanguage}"],
+  "prevention_tips": "preventive measures in ${targetLanguage}",
+  "deficiencies": ["common deficiencies in ${targetLanguage}"],
+  "suitable_crops": ["5-8 crops suitable for this region in ${targetLanguage}"],
+  "fertilizer_recommendations": "fertilizer recommendations in ${targetLanguage}"
 }`;
 
       messages = [
         {
           role: 'system',
-          content: 'You are an expert soil scientist, agronomist, and plant pathologist. Provide accurate soil analysis, disease risk assessment, and farming recommendations based on geographical data.'
+          content: `You are an expert soil scientist, agronomist, and plant pathologist. Provide accurate soil analysis, disease risk assessment, and farming recommendations based on geographical data. IMPORTANT: Respond entirely in ${targetLanguage} language.`
         },
         {
           role: 'user',
