@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
 const PlantDetection = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -47,7 +47,8 @@ const PlantDetection = () => {
       const { data, error } = await supabase.functions.invoke('analyze-plant', {
         body: { 
           image: selectedImage,
-          detectDisease: detectDisease 
+          detectDisease: detectDisease,
+          language: i18n.language
         },
       });
 

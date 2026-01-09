@@ -5,13 +5,27 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Language mapping for AI responses
+const languageMap: Record<string, string> = {
+  'en': 'English',
+  'kn': 'Kannada',
+  'hi': 'Hindi',
+  'ta': 'Tamil',
+  'te': 'Telugu',
+  'ml': 'Malayalam',
+  'mr': 'Marathi',
+  'gu': 'Gujarati',
+  'bn': 'Bengali',
+  'ur': 'Urdu'
+};
+
 // Input validation helper
-function validateInput(body: unknown): { image: string; detectDisease: boolean } {
+function validateInput(body: unknown): { image: string; detectDisease: boolean; language: string } {
   if (!body || typeof body !== 'object') {
     throw new Error("Invalid request body");
   }
 
-  const { image, detectDisease = false } = body as Record<string, unknown>;
+  const { image, detectDisease = false, language = 'en' } = body as Record<string, unknown>;
 
   if (!image || typeof image !== 'string') {
     throw new Error("No image provided or invalid image format");
@@ -31,7 +45,9 @@ function validateInput(body: unknown): { image: string; detectDisease: boolean }
     throw new Error("detectDisease must be a boolean");
   }
 
-  return { image, detectDisease };
+  const validLanguage = typeof language === 'string' && languageMap[language] ? language : 'en';
+
+  return { image, detectDisease, language: validLanguage };
 }
 
 serve(async (req) => {
@@ -41,14 +57,15 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { image, detectDisease } = validateInput(body);
+    const { image, detectDisease, language } = validateInput(body);
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log(`Analyzing plant image (disease detection: ${detectDisease})...`);
+    const targetLanguage = languageMap[language] || 'English';
+    console.log(`Analyzing plant image (disease detection: ${detectDisease}, language: ${targetLanguage})...`);
 
     const systemPrompt = detectDisease 
       ? `You are an expert botanist and plant pathologist. Analyze plant leaf images to:
@@ -56,20 +73,24 @@ serve(async (req) => {
 2. Detect any diseases present
 3. Provide symptoms, treatment, and pesticide recommendations
 
-Respond in JSON format with this structure:
-{
-  "species": "plant name",
-  "confidence": 0.95,
-  "disease": "disease name or null if healthy",
-  "symptoms": "description of visible symptoms",
-  "cure": "treatment recommendations",
-  "pesticides": "recommended pesticides"
-}`
-      : `You are an expert botanist. Identify plant species from images.
+IMPORTANT: Respond entirely in ${targetLanguage} language. All text values must be in ${targetLanguage}.
 
 Respond in JSON format with this structure:
 {
-  "species": "plant name",
+  "species": "plant name in ${targetLanguage}",
+  "confidence": 0.95,
+  "disease": "disease name in ${targetLanguage} or null if healthy",
+  "symptoms": "description of visible symptoms in ${targetLanguage}",
+  "cure": "treatment recommendations in ${targetLanguage}",
+  "pesticides": "recommended pesticides in ${targetLanguage}"
+}`
+      : `You are an expert botanist. Identify plant species from images.
+
+IMPORTANT: Respond entirely in ${targetLanguage} language. All text values must be in ${targetLanguage}.
+
+Respond in JSON format with this structure:
+{
+  "species": "plant name in ${targetLanguage}",
   "confidence": 0.95,
   "disease": null,
   "symptoms": null,
@@ -78,8 +99,8 @@ Respond in JSON format with this structure:
 }`;
 
     const userPrompt = detectDisease
-      ? 'Analyze this plant leaf image. Identify the species and check for any diseases.'
-      : 'Identify the plant species in this image.';
+      ? `Analyze this plant leaf image. Identify the species and check for any diseases. Respond in ${targetLanguage}.`
+      : `Identify the plant species in this image. Respond in ${targetLanguage}.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
