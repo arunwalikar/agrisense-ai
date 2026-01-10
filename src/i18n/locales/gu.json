@@ -19,7 +19,8 @@
     "upload": "અપલોડ",
     "selectLanguage": "ભાષા પસંદ કરો",
     "noData": "ડેટા ઉપલબ્ધ નથી",
-    "tryAgain": "ફરી પ્રયાસ કરો"
+    "tryAgain": "ફરી પ્રયાસ કરો",
+    "getStarted": "શરૂ કરો"
   },
   "nav": {
     "dashboard": "ડેશબોર્ડ",
@@ -33,6 +34,22 @@
     "title": "એગ્રીસ્માર્ટમાં આપનું સ્વાગત છે",
     "subtitle": "તમારો સ્માર્ટ ખેતી સહાયક",
     "description": "એગ્રીસ્માર્ટ ખેડૂતોને છોડના સ્વાસ્થ્ય, જમીન વિશ્લેષણ, હવામાન આગાહી અને પાક ભલામણો માટે AI-આધારિત આંતરદૃષ્ટિનો ઉપયોગ કરીને વધુ સારા નિર્ણયો લેવામાં મદદ કરે છે.",
+    "hero": {
+      "title": "એગ્રીસ્માર્ટ",
+      "subtitle": "સ્વસ્થ પાકો, સારી ઉપજ અને ટકાઉ ખેતી પદ્ધતિઓ માટે AI-આધારિત આંતરદૃષ્ટિ સાથે ખેડૂતોને સશક્ત બનાવવું.",
+      "startDetection": "છોડ ઓળખ શરૂ કરો",
+      "checkWeather": "હવામાન તપાસો"
+    },
+    "stats": {
+      "successRate": "ઓળખ ચોકસાઈ",
+      "successRateDesc": "AI-આધારિત છોડ ઓળખ ચોકસાઈ",
+      "plantDatabase": "છોડ પ્રજાતિઓ",
+      "plantDatabaseDesc": "પાકો અને છોડનો વિસ્તૃત ડેટાબેઝ",
+      "weatherData": "હવામાન અપડેટ્સ",
+      "weatherDataDesc": "રીઅલ-ટાઇમ હવામાન આગાહી",
+      "live": "લાઇવ"
+    },
+    "exploreFeatures": "અમારી સુવિધાઓ અન્વેષણ કરો",
     "features": {
       "plantDetection": { "title": "છોડ ઓળખ", "description": "AI ઇમેજ વિશ્લેષણનો ઉપયોગ કરીને છોડ ઓળખો અને રોગો શોધો" },
       "soilAnalysis": { "title": "જમીન વિશ્લેષણ", "description": "જમીનના સ્વાસ્થ્યનું વિશ્લેષણ કરો અને સુધારણા માટે ભલામણો મેળવો" },
@@ -41,6 +58,24 @@
       "marketPrices": { "title": "બજાર ભાવ", "description": "વિવિધ પાકોના વર્તમાન બજાર ભાવો ટ્રેક કરો" }
     },
     "quickStats": { "title": "ઝડપી આંકડા", "analysesCompleted": "પૂર્ણ થયેલ વિશ્લેષણ", "cropsRecommended": "ભલામણ કરેલ પાકો", "weatherUpdates": "હવામાન અપડેટ્સ" }
+  },
+  "features": {
+    "plantDetection": {
+      "title": "છોડ અને રોગ શોધ",
+      "description": "AI-આધારિત વિશ્લેષણ સાથે પ્રજાતિ ઓળખવા અને રોગો શોધવા માટે છોડના પાનની છબી અપલોડ કરો"
+    },
+    "soilAnalysis": {
+      "title": "જમીન આરોગ્ય વિશ્લેષણ",
+      "description": "જમીનની ગુણવત્તાનું વિશ્લેષણ કરો, ઉણપો શોધો અને ખાતર ભલામણો મેળવો"
+    },
+    "weather": {
+      "title": "હવામાન આગાહી",
+      "description": "તમારા સ્થાન માટે ખેતી સલાહ સાથે સચોટ 7-દિવસની હવામાન આગાહી મેળવો"
+    },
+    "cropRecommendations": {
+      "title": "સ્માર્ટ પાક ભલામણો",
+      "description": "તમારી જમીનના પ્રકાર અને આબોહવાની પરિસ્થિતિઓના આધારે વ્યક્તિગત પાક સૂચનો મેળવો"
+    }
   },
   "plantDetection": {
     "title": "છોડ અને રોગ શોધ",
@@ -77,25 +112,111 @@
     "errors": { "noLocation": "કૃપા કરીને સ્થાન દાખલ કરો", "fetchFailed": "હવામાન ડેટા મેળવવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો." }
   },
   "cropRecommendation": {
-    "title": "પાક ભલામણ",
-    "subtitle": "તમારી જમીન અને આબોહવાની પરિસ્થિતિઓના આધારે AI-આધારિત પાક સૂચનો મેળવો",
-    "form": {
-      "soilType": "જમીનનો પ્રકાર", "selectSoilType": "જમીનનો પ્રકાર પસંદ કરો",
-      "soilTypes": { "clay": "માટીની જમીન", "sandy": "રેતાળ જમીન", "loamy": "ગોરાડુ જમીન", "silty": "કાંપની જમીન", "peaty": "પીટ જમીન", "chalky": "ચૂનાની જમીન", "alluvial": "કાંપની જમીન", "red": "લાલ જમીન", "black": "કાળી જમીન", "laterite": "લેટેરાઇટ જમીન" },
-      "phLevel": "pH સ્તર", "temperature": "સરેરાશ તાપમાન (°C)", "rainfall": "વાર્ષિક વરસાદ (મીમી)", "season": "ઉગાડવાની ઋતુ", "selectSeason": "ઋતુ પસંદ કરો",
-      "seasons": { "kharif": "ખરીફ (ચોમાસું)", "rabi": "રવી (શિયાળો)", "zaid": "ઝાયદ (ઉનાળો)", "perennial": "બારમાસી" },
-      "submit": "ભલામણો મેળવો"
+    "title": "પાક માર્ગદર્શિકા અને ભલામણો",
+    "subtitle": "પાક સૂચનો મેળવો અને ચોક્કસ પાક માટે જમીનની યોગ્યતા તપાસો",
+    "tabRecommend": "પાક ભલામણો",
+    "tabSuitability": "જમીન યોગ્યતા તપાસ",
+    "farmConditions": "ખેતર પરિસ્થિતિઓ",
+    "farmConditionsDesc": "તમારી ખેતી પરિસ્થિતિઓ વિશે વિગતો આપો",
+    "fetchingSoilData": "જમીન ડેટા મેળવી રહ્યા છીએ...",
+    "autoFillLocation": "મારા સ્થાનથી ઓટો-ફિલ કરો",
+    "orEnterManually": "અથવા મેન્યુઅલી દાખલ કરો",
+    "soilType": "જમીનનો પ્રકાર",
+    "selectSoilType": "જમીનનો પ્રકાર પસંદ કરો",
+    "soilTypes": {
+      "sandy": "રેતાળ જમીન",
+      "loamy": "ગોરાડુ જમીન",
+      "clay": "માટીની જમીન",
+      "silty": "કાંપની જમીન",
+      "peaty": "પીટ જમીન",
+      "chalky": "ચૂનાની જમીન"
     },
-    "results": { "title": "ભલામણ કરેલ પાકો", "crop": "પાક", "suitability": "યોગ્યતા", "yield": "અપેક્ષિત ઉપજ", "duration": "ઉગાડવાનો સમયગાળો", "tips": "ઉગાડવાની ટિપ્સ", "marketValue": "બજાર મૂલ્ય", "waterRequirement": "પાણીની જરૂરિયાત" },
-    "loading": "પરિસ્થિતિઓનું વિશ્લેષણ થઈ રહ્યું છે...",
-    "errors": { "fetchFailed": "ભલામણો મેળવવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો." }
+    "soilPh": "જમીન pH",
+    "phPlaceholder": "દા.ત., 6.5",
+    "temperature": "સરેરાશ તાપમાન (°C)",
+    "temperaturePlaceholder": "દા.ત., 25",
+    "rainfall": "વાર્ષિક વરસાદ (મીમી)",
+    "rainfallPlaceholder": "દા.ત., 800",
+    "season": "ઉગાડવાની ઋતુ",
+    "selectSeason": "ઋતુ પસંદ કરો",
+    "seasons": {
+      "spring": "વસંત",
+      "summer": "ઉનાળો",
+      "autumn": "પાનખર",
+      "winter": "શિયાળો",
+      "monsoon": "ચોમાસું"
+    },
+    "getRecommendations": "ભલામણો મેળવો",
+    "recommendedCrops": "ભલામણ કરેલ પાકો",
+    "bestCropsForConditions": "તમારી પરિસ્થિતિઓ માટે શ્રેષ્ઠ પાકો",
+    "fillFormToSee": "યોગ્ય પાકો જોવા માટે ફોર્મ ભરો અને \"ભલામણો મેળવો\" ક્લિક કરો",
+    "topRecommendations": "ટોપ ભલામણો",
+    "match": "મેચ",
+    "growth": "વૃદ્ધિ",
+    "yield": "ઉપજ",
+    "noCropsAvailable": "કોઈ પાક ઉપલબ્ધ નથી",
+    "monthlyFarmingPlan": "માસિક ખેતી યોજના",
+    "noPlanAvailable": "કોઈ યોજના ઉપલબ્ધ નથી",
+    "waterRequirements": "પાણીની જરૂરિયાતો",
+    "standardIrrigation": "માનક સિંચાઈ પદ્ધતિઓ લાગુ પડે છે",
+    "additionalTips": "વધારાની ટિપ્સ",
+    "consultExperts": "સ્થાનિક કૃષિ નિષ્ણાતોની સલાહ લો",
+    "factorsTitle": "પાક પસંદગીને અસર કરતા પરિબળો",
+    "factorsSoil": "જમીન પરિસ્થિતિઓ",
+    "factorsSoilDesc": "pH સ્તર, પોષક તત્વો, ડ્રેનેજ અને જમીનની રચના",
+    "factorsClimate": "આબોહવા",
+    "factorsClimateDesc": "તાપમાન શ્રેણી, વરસાદ પેટર્ન અને મોસમી ફેરફારો",
+    "factorsWater": "પાણીની ઉપલબ્ધતા",
+    "factorsWaterDesc": "સિંચાઈ સુવિધાઓ અને કુદરતી જળ સ્ત્રોતો",
+    "factorsMarket": "બજાર માંગ",
+    "factorsMarketDesc": "સ્થાનિક બજાર ભાવ અને પાક નફાકારકતા",
+    "suitabilityTitle": "જમીન યોગ્યતા વિશ્લેષણ",
+    "suitabilityDesc": "તમારી જમીન ચોક્કસ પાક માટે યોગ્ય છે કે નહીં તે તપાસો",
+    "cropName": "પાકનું નામ",
+    "cropNamePlaceholder": "દા.ત., ઘઉં, ચોખા, મકાઈ",
+    "checkSuitability": "યોગ્યતા તપાસો",
+    "suitabilityReport": "યોગ્યતા રિપોર્ટ",
+    "suitabilityReportDesc": "વિગતવાર જમીન યોગ્યતા વિશ્લેષણ",
+    "enterCropToCheck": "યોગ્યતા તપાસવા માટે પાકનું નામ અને જમીન પરિસ્થિતિઓ દાખલ કરો",
+    "suitable": "યોગ્ય ✓",
+    "notSuitable": "અયોગ્ય ✗",
+    "currentConditions": "વર્તમાન પરિસ્થિતિઓ",
+    "idealRequirements": "આદર્શ જરૂરિયાતો",
+    "phLabel": "pH",
+    "temperatureLabel": "તાપમાન",
+    "rainfallLabel": "વરસાદ",
+    "recommendations": "ભલામણો",
+    "alternativeCrops": "વૈકલ્પિક પાકો",
+    "geolocationNotSupported": "જીઓલોકેશન સમર્થિત નથી",
+    "browserNotSupported": "તમારું બ્રાઉઝર જીઓલોકેશનને સમર્થન આપતું નથી",
+    "soilDataRetrieved": "જમીન ડેટા મળ્યો",
+    "formAutoFilled": "તમારા સ્થાનની જમીન પરિસ્થિતિઓ સાથે ફોર્મ ઓટો-ફિલ થયું",
+    "failedToFetchSoil": "જમીન ડેટા મેળવવામાં નિષ્ફળ",
+    "couldNotRetrieveSoil": "તમારા સ્થાન માટે જમીન ડેટા મેળવી શકાયો નથી",
+    "locationError": "સ્થાન ભૂલ",
+    "couldNotGetLocation": "તમારું સ્થાન મેળવી શકાયું નથી",
+    "missingInfo": "માહિતી ખૂટે છે",
+    "fillAllFields": "કૃપા કરીને બધા જરૂરી ફીલ્ડ ભરો",
+    "recommendationsReady": "ભલામણો તૈયાર છે",
+    "bestCropsIdentified": "તમારી પરિસ્થિતિઓ માટે શ્રેષ્ઠ પાકો ઓળખાયા",
+    "failedToGetRecommendations": "ભલામણો મેળવવામાં નિષ્ફળ",
+    "couldNotGenerateRecommendations": "ભલામણો બનાવી શકાઈ નથી. કૃપા કરીને ફરી પ્રયાસ કરો.",
+    "enterCropName": "કૃપા કરીને પાકનું નામ દાખલ કરો",
+    "analysisComplete": "વિશ્લેષણ પૂર્ણ",
+    "suitabilityAnalysisReady": "જમીન યોગ્યતા વિશ્લેષણ તૈયાર છે",
+    "failedToAnalyzeSuitability": "યોગ્યતા વિશ્લેષણમાં નિષ્ફળ",
+    "couldNotAnalyzeSuitability": "જમીન યોગ્યતાનું વિશ્લેષણ કરી શકાયું નથી. કૃપા કરીને ફરી પ્રયાસ કરો."
   },
   "marketPrices": {
     "title": "બજાર ભાવ",
     "subtitle": "વિવિધ બજારોમાં વિવિધ પાકોના વર્તમાન બજાર ભાવો ટ્રેક કરો",
-    "searchCrop": "પાક શોધો...", "allMarkets": "બધા બજારો", "selectMarket": "બજાર પસંદ કરો",
+    "searchCrop": "પાક શોધો...",
+    "allMarkets": "બધા બજારો",
+    "selectMarket": "બજાર પસંદ કરો",
     "table": { "crop": "પાક", "market": "બજાર", "price": "ભાવ (₹/કિલો)", "change": "ફેરફાર", "date": "છેલ્લું અપડેટ" },
-    "priceUp": "ભાવ વધ્યો", "priceDown": "ભાવ ઘટ્યો", "noChange": "કોઈ ફેરફાર નથી",
+    "priceUp": "ભાવ વધ્યો",
+    "priceDown": "ભાવ ઘટ્યો",
+    "noChange": "કોઈ ફેરફાર નથી",
     "errors": { "fetchFailed": "બજાર ભાવો મેળવવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો." }
   },
   "notFound": { "title": "પેજ મળ્યું નથી", "message": "તમે શોધી રહ્યા છો તે પેજ અસ્તિત્વમાં નથી અથવા ખસેડવામાં આવ્યું છે.", "backHome": "હોમ પર પાછા જાઓ" },
