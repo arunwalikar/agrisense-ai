@@ -11,6 +11,8 @@ import Weather from "./pages/Weather";
 import CropRecommendation from "./pages/CropRecommendation";
 import MarketPrices from "./pages/MarketPrices";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -21,13 +23,14 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Layout><Dashboard /></Layout>} />
-          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-          <Route path="/plant-detection" element={<Layout><PlantDetection /></Layout>} />
-          <Route path="/soil-analysis" element={<Layout><SoilAnalysis /></Layout>} />
-          <Route path="/weather" element={<Layout><Weather /></Layout>} />
-          <Route path="/crop-recommendation" element={<Layout><CropRecommendation /></Layout>} />
-          <Route path="/market-prices" element={<Layout><MarketPrices /></Layout>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+          <Route path="/plant-detection" element={<ProtectedRoute><Layout><PlantDetection /></Layout></ProtectedRoute>} />
+          <Route path="/soil-analysis" element={<ProtectedRoute><Layout><SoilAnalysis /></Layout></ProtectedRoute>} />
+          <Route path="/weather" element={<ProtectedRoute><Layout><Weather /></Layout></ProtectedRoute>} />
+          <Route path="/crop-recommendation" element={<ProtectedRoute><Layout><CropRecommendation /></Layout></ProtectedRoute>} />
+          <Route path="/market-prices" element={<ProtectedRoute><Layout><MarketPrices /></Layout></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

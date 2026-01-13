@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -129,6 +130,33 @@ serve(async (req) => {
   }
 
   try {
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }), 
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data, error: authError } = await supabaseClient.auth.getUser(token);
+    
+    if (authError || !data?.user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired token' }), 
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Authenticated user: ${data.user.id}`);
+
     const body = await req.json();
     const { soilType, ph, temperature, rainfall, season, location, weatherData } = validateInput(body);
 
@@ -301,8 +329,8 @@ IMPORTANT:
       throw new Error(`AI recommendation failed: ${response.status}`);
     }
 
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
+    const aiData = await response.json();
+    const content = aiData.choices?.[0]?.message?.content;
 
     if (!content) {
       throw new Error('No content in AI response');
