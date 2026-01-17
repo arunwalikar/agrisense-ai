@@ -31,7 +31,6 @@ export default function Login() {
           <CardTitle className="text-2xl font-bold text-green-700 dark:text-green-400">
             🌾 AgriSmart
           </CardTitle>
-          <p className="text-muted-foreground">Sign in to access your farm dashboard</p>
         </CardHeader>
         <CardContent>
           <Auth
