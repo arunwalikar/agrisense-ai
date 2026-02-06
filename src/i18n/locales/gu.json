@@ -1,34 +1,25 @@
 {
+  "app": {
+    "name": "એગ્રીસેન્સ – સ્માર્ટ ખેતી સહાયક"
+  },
   "common": {
-    "appName": "એગ્રીસ્માર્ટ",
+    "appName": "એગ્રીસેન્સ",
     "loading": "લોડ થઈ રહ્યું છે...",
-    "error": "ભૂલ",
-    "success": "સફળ",
-    "submit": "સબમિટ કરો",
-    "cancel": "રદ કરો",
-    "save": "સાચવો",
-    "delete": "કાઢી નાખો",
-    "edit": "સંપાદિત કરો",
-    "close": "બંધ કરો",
-    "back": "પાછળ",
-    "next": "આગળ",
-    "search": "શોધો",
-    "filter": "ફિલ્ટર",
-    "refresh": "રિફ્રેશ",
-    "download": "ડાઉનલોડ",
-    "upload": "અપલોડ",
-    "selectLanguage": "ભાષા પસંદ કરો",
-    "noData": "ડેટા ઉપલબ્ધ નથી",
-    "tryAgain": "ફરી પ્રયાસ કરો",
+...
     "getStarted": "શરૂ કરો"
   },
   "nav": {
     "dashboard": "ડેશબોર્ડ",
-    "plantDetection": "છોડ ઓળખ",
+    "home": "ડેશબોર્ડ",
+    "plantDetection": "પાક ડૉક્ટર",
+    "plants": "પાક ડૉક્ટર",
     "soilAnalysis": "જમીન વિશ્લેષણ",
-    "weather": "હવામાન",
+    "soil": "જમીન વિશ્લેષણ",
+    "weather": "હવામાન અંતર્દૃષ્ટિ",
     "cropRecommendation": "પાક ભલામણ",
-    "marketPrices": "બજાર ભાવ"
+    "cropGuide": "પાક માર્ગદર્શિકા",
+    "marketPrices": "બજાર વલણો",
+    "market": "બજાર વલણો"
   },
   "dashboard": {
     "title": "એગ્રીસ્માર્ટમાં આપનું સ્વાગત છે",

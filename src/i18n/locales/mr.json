@@ -1,34 +1,25 @@
 {
+  "app": {
+    "name": "अॅग्रीसेन्स – स्मार्ट शेती सहाय्यक"
+  },
   "common": {
-    "appName": "अॅग्रीस्मार्ट",
+    "appName": "अॅग्रीसेन्स",
     "loading": "लोड होत आहे...",
-    "error": "त्रुटी",
-    "success": "यशस्वी",
-    "submit": "सबमिट करा",
-    "cancel": "रद्द करा",
-    "save": "जतन करा",
-    "delete": "हटवा",
-    "edit": "संपादित करा",
-    "close": "बंद करा",
-    "back": "मागे",
-    "next": "पुढे",
-    "search": "शोधा",
-    "filter": "फिल्टर",
-    "refresh": "रिफ्रेश",
-    "download": "डाउनलोड",
-    "upload": "अपलोड",
-    "selectLanguage": "भाषा निवडा",
-    "noData": "डेटा उपलब्ध नाही",
-    "tryAgain": "पुन्हा प्रयत्न करा",
+...
     "getStarted": "सुरू करा"
   },
   "nav": {
     "dashboard": "डॅशबोर्ड",
-    "plantDetection": "वनस्पती ओळख",
+    "home": "डॅशबोर्ड",
+    "plantDetection": "पीक डॉक्टर",
+    "plants": "पीक डॉक्टर",
     "soilAnalysis": "माती विश्लेषण",
-    "weather": "हवामान",
+    "soil": "माती विश्लेषण",
+    "weather": "हवामान अंतर्दृष्टी",
     "cropRecommendation": "पीक शिफारस",
-    "marketPrices": "बाजार भाव"
+    "cropGuide": "पीक मार्गदर्शक",
+    "marketPrices": "बाजार कल",
+    "market": "बाजार कल"
   },
   "dashboard": {
     "title": "अॅग्रीस्मार्टमध्ये आपले स्वागत आहे",
