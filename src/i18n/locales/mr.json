@@ -5,7 +5,24 @@
   "common": {
     "appName": "अॅग्रीसेन्स",
     "loading": "लोड होत आहे...",
-...
+    "error": "त्रुटी",
+    "success": "यशस्वी",
+    "submit": "सबमिट करा",
+    "cancel": "रद्द करा",
+    "save": "जतन करा",
+    "delete": "हटवा",
+    "edit": "संपादित करा",
+    "close": "बंद करा",
+    "back": "मागे",
+    "next": "पुढे",
+    "search": "शोधा",
+    "filter": "फिल्टर",
+    "refresh": "रिफ्रेश",
+    "download": "डाउनलोड",
+    "upload": "अपलोड",
+    "selectLanguage": "भाषा निवडा",
+    "noData": "डेटा उपलब्ध नाही",
+    "tryAgain": "पुन्हा प्रयत्न करा",
     "getStarted": "सुरू करा"
   },
   "nav": {

@@ -5,7 +5,24 @@
   "common": {
     "appName": "એગ્રીસેન્સ",
     "loading": "લોડ થઈ રહ્યું છે...",
-...
+    "error": "ભૂલ",
+    "success": "સફળ",
+    "submit": "સબમિટ કરો",
+    "cancel": "રદ કરો",
+    "save": "સાચવો",
+    "delete": "કાઢી નાખો",
+    "edit": "સંપાદિત કરો",
+    "close": "બંધ કરો",
+    "back": "પાછળ",
+    "next": "આગળ",
+    "search": "શોધો",
+    "filter": "ફિલ્ટર",
+    "refresh": "રિફ્રેશ",
+    "download": "ડાઉનલોડ",
+    "upload": "અપલોડ",
+    "selectLanguage": "ભાષા પસંદ કરો",
+    "noData": "ડેટા ઉપલબ્ધ નથી",
+    "tryAgain": "ફરી પ્રયાસ કરો",
     "getStarted": "શરૂ કરો"
   },
   "nav": {

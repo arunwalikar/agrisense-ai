@@ -5,7 +5,24 @@
   "common": {
     "appName": "एग्रीसेंस",
     "loading": "लोड हो रहा है...",
-...
+    "error": "त्रुटि",
+    "success": "सफल",
+    "submit": "जमा करें",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "close": "बंद करें",
+    "back": "वापस",
+    "next": "अगला",
+    "search": "खोजें",
+    "filter": "फ़िल्टर",
+    "refresh": "रिफ्रेश",
+    "download": "डाउनलोड",
+    "upload": "अपलोड",
+    "selectLanguage": "भाषा चुनें",
+    "noData": "कोई डेटा उपलब्ध नहीं",
+    "tryAgain": "पुनः प्रयास करें",
     "getStarted": "शुरू करें"
   },
   "nav": {
