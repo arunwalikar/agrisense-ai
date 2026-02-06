@@ -27,11 +27,16 @@
   },
   "nav": {
     "dashboard": "Dashboard",
-    "plantDetection": "Plant Detection",
+    "home": "Dashboard",
+    "plantDetection": "Crop Doctor",
+    "plants": "Crop Doctor",
     "soilAnalysis": "Soil Analysis",
-    "weather": "Weather",
+    "soil": "Soil Analysis",
+    "weather": "Weather Insights",
     "cropRecommendation": "Crop Recommendation",
-    "marketPrices": "Market Prices"
+    "cropGuide": "Crop Guide",
+    "marketPrices": "Market Trends",
+    "market": "Market Trends"
   },
   "dashboard": {
     "title": "Welcome to AgriSmart",
