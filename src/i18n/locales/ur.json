@@ -27,11 +27,16 @@
   },
   "nav": {
     "dashboard": "ڈیش بورڈ",
-    "plantDetection": "پودے کی شناخت",
+    "home": "ڈیش بورڈ",
+    "plantDetection": "فصل ڈاکٹر",
+    "plants": "فصل ڈاکٹر",
     "soilAnalysis": "مٹی کا تجزیہ",
-    "weather": "موسم",
+    "soil": "مٹی کا تجزیہ",
+    "weather": "موسم کی بصیرت",
     "cropRecommendation": "فصل کی سفارش",
-    "marketPrices": "منڈی کے بھاؤ"
+    "cropGuide": "فصل گائیڈ",
+    "marketPrices": "منڈی کے رجحانات",
+    "market": "منڈی کے رجحانات"
   },
   "dashboard": {
     "title": "ایگری سمارٹ میں خوش آمدید",
