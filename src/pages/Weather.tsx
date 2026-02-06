@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -200,7 +200,7 @@ const Weather = () => {
     };
   };
 
-  const fetchWeather = async (loc?: string) => {
+  const fetchWeather = useCallback(async (loc?: string) => {
     const searchLocation = loc || location;
     if (!searchLocation && !loc) {
       toast({
@@ -240,14 +240,16 @@ const Weather = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [location, toast, t]);
 
-  const getCurrentLocation = () => {
+  const getCurrentLocation = useCallback(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          fetchWeather(`${latitude},${longitude}`);
+          const coordString = `${latitude},${longitude}`;
+          setLocation(coordString);
+          fetchWeather(coordString);
         },
         () => {
           toast({
@@ -264,7 +266,12 @@ const Weather = () => {
         variant: "destructive",
       });
     }
-  };
+  }, [fetchWeather, toast, t]);
+
+  // Auto-load weather using live location on mount
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
 
   const irrigationStatusColor = {
     required: 'bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400',
