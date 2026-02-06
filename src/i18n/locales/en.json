@@ -1,6 +1,9 @@
 {
+  "app": {
+    "name": "AgriSense – Smart Farming Assistant"
+  },
   "common": {
-    "appName": "AgriSmart",
+    "appName": "AgriSense",
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
