@@ -27,8 +27,8 @@ function validateInput(body: unknown): { location: string } {
     throw new Error("Location must be less than 200 characters");
   }
 
-  // Basic sanitization - allow only alphanumeric, spaces, commas, hyphens, and common location chars
-  if (!/^[a-zA-Z0-9\s,\-.'()]+$/.test(trimmedLocation)) {
+  // Allow alphanumeric, spaces, commas, hyphens, periods, apostrophes, parentheses, and +/- for coordinates
+  if (!/^[a-zA-Z0-9\s,\-.'()+°]+$/.test(trimmedLocation)) {
     throw new Error("Location contains invalid characters");
   }
 
