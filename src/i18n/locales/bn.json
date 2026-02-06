@@ -1,34 +1,25 @@
 {
+  "app": {
+    "name": "অ্যাগ্রিসেন্স – স্মার্ট কৃষি সহায়ক"
+  },
   "common": {
-    "appName": "অ্যাগ্রিস্মার্ট",
+    "appName": "অ্যাগ্রিসেন্স",
     "loading": "লোড হচ্ছে...",
-    "error": "ত্রুটি",
-    "success": "সফল",
-    "submit": "জমা দিন",
-    "cancel": "বাতিল",
-    "save": "সংরক্ষণ করুন",
-    "delete": "মুছুন",
-    "edit": "সম্পাদনা করুন",
-    "close": "বন্ধ করুন",
-    "back": "পিছনে",
-    "next": "পরবর্তী",
-    "search": "খুঁজুন",
-    "filter": "ফিল্টার",
-    "refresh": "রিফ্রেশ",
-    "download": "ডাউনলোড",
-    "upload": "আপলোড",
-    "selectLanguage": "ভাষা নির্বাচন করুন",
-    "noData": "কোনো তথ্য নেই",
-    "tryAgain": "আবার চেষ্টা করুন",
+...
     "getStarted": "শুরু করুন"
   },
   "nav": {
     "dashboard": "ড্যাশবোর্ড",
-    "plantDetection": "উদ্ভিদ সনাক্তকরণ",
+    "home": "ড্যাশবোর্ড",
+    "plantDetection": "ফসল ডাক্তার",
+    "plants": "ফসল ডাক্তার",
     "soilAnalysis": "মাটি বিশ্লেষণ",
-    "weather": "আবহাওয়া",
+    "soil": "মাটি বিশ্লেষণ",
+    "weather": "আবহাওয়া অন্তর্দৃষ্টি",
     "cropRecommendation": "ফসল সুপারিশ",
-    "marketPrices": "বাজার দর"
+    "cropGuide": "ফসল গাইড",
+    "marketPrices": "বাজার প্রবণতা",
+    "market": "বাজার প্রবণতা"
   },
   "dashboard": {
     "title": "অ্যাগ্রিস্মার্টে স্বাগতম",
