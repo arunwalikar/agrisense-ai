@@ -18,3 +18,6 @@ verify_jwt = false
 
 [functions.check-soil-suitability]
 verify_jwt = false
+
+[functions.chat]
+verify_jwt = false
