@@ -14,6 +14,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ChatBot } from "@/components/ChatBot";
 
 interface LayoutProps {
   children: ReactNode;
@@ -145,6 +146,7 @@ export const Layout = ({ children }: LayoutProps) => {
           ))}
         </div>
       </nav>
+      <ChatBot />
     </div>
   );
 };
