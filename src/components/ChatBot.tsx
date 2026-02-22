@@ -26,7 +26,7 @@ export const ChatBot = () => {
   const { messages, isLoading, sendMessage, clearMessages } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any>(null);
   const lastSpokenIndexRef = useRef<number>(-1);
   const { t, i18n } = useTranslation();
 
@@ -65,7 +65,7 @@ export const ChatBot = () => {
   };
 
   const startListening = useCallback(() => {
-    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognitionAPI) return;
 
     const recognition = new SpeechRecognitionAPI();
@@ -115,7 +115,7 @@ export const ChatBot = () => {
     }
   };
 
-  const hasSpeechRecognition = typeof window !== "undefined" && !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  const hasSpeechRecognition = typeof window !== "undefined" && !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
 
   return (
     <>
